@@ -1,0 +1,2 @@
+TITLES=["Animal Welfare", "Etro Computer Vision", "Simplex", "Smart prothese", "Exoskeletons", "Which Content is real", "Brickiebot"]
+SCRIPTS = ["animalwelfare.sh", "etrocomputervision.sh", "simplex.sh", "smartprothesis.sh", "exoskeletons.sh", "whichcontentisreal.sh"]
