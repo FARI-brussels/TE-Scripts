@@ -1,6 +1,6 @@
 #!/bin/bash
 TITLES=("Animal Welfare" "Etro Computer Vision" "Simplex" "Smart prothese" "Exoskeletons" "Which Content is real" "Brickiebot")
-PREFIX=("animalwelfare" "etrocomputervision" "simplex" "smartprothesis" "exoskeletons" "whichcontentisreal" "brickiebot.sh")
+PREFIX=("animalwelfare" "etrocomputervision" "simplex" "smartprothesis" "exoskeletons" "whichcontentisreal" "brickiebot")
 cd /home/fari/Desktop
 for ((i=0; i< ${#TITLES[@]}; i++));
 do  
