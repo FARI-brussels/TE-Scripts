@@ -10,7 +10,7 @@ DEMO_FOLDER="demo-iridia-animal-welfare"
 cd "$WELCOME_SCREEN_DIR"
 git pull origin main
 #run welcome screen
-terminator --working-directory=$WELCOME_SCREEN_DIR -e 'nohup python server.py' -T "Welcome Screen"
+gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -e 'nohup python server.py' -T "Welcome Screen"
 
 # Check if the directory exists
 if [ -d "$DEMO_DIR/$DEMO_FOLDER" ]; then
@@ -24,6 +24,8 @@ else
   cd "$DEMO_DIR"
 fi
 
-chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
+
 #run demo
-terminator --working-directory=$DEMO_DIR/$DEMO_FOLDER -e 'bash -c "nohup python -m flask --app=app --debug run --host=0.0.0.0"' -T "Demo"
+gnome-terminal --working-directory=$DEMO_DIR/$DEMO_FOLDER -e 'bash -c "nohup python -m flask --app=app --debug run --host=0.0.0.0"' -T "Demo"
+
+chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"

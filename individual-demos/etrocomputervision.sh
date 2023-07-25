@@ -23,8 +23,8 @@ else
   git clone "$DEMO_REPO" "$DEMO_DIR/$DEMO_FOLDER"
   cd "$DEMO_DIR"
 fi
-
+gnome-terminal --working-directory=$DEMO_DIR/$DEMO_FOLDER -e 'bash -c "nohup python3 main.py"' -T "Demo"
+gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -e 'nohup python server.py' -T "Welcome Screen"
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
 #run demo
-terminator --working-directory=$DEMO_DIR/$DEMO_FOLDER -e 'bash -c "nohup python3 main.py"' -T "Demo"
-terminator --working-directory=$WELCOME_SCREEN_DIR -e 'nohup python server.py' -T "Welcome Screen"
+
