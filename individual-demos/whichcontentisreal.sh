@@ -10,7 +10,7 @@ DEMO_FOLDER="demo-fari-which-content-is-real"
 cd "$WELCOME_SCREEN_DIR"
 #git pull origin main
 #run welcome screen
-gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -e 'nohup python server.py' -T "Welcome Screen"
+gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -- 'nohup python server.py'
 
 # Check if the directory exists
 if [ -d "$DEMO_DIR/$DEMO_FOLDER" ]; then
@@ -26,5 +26,5 @@ fi
 
 #run demo
 
-gnome-terminal --working-directory=$DEMO_DIR/$DEMO_FOLDER -e 'bash -c "nohup python server.py"' -T "Demo"
+gnome-terminal --working-directory=$DEMO_DIR/$DEMO_FOLDER -- bash -c "nohup python server.py" 
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
