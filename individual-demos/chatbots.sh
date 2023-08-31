@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Demo repo and demo directory path on the sbc here
-DEMO_ID="13"
+DEMO_ID="11"
 WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen-Fari_Internship"
 DEMO_REPO="https://github.com/ShadhviVR/Chatbot-fari.git"
 DEMO_DIR="/home/fari/Documents/"
-DEMO_FOLDER="demo-fari-chatbots"
+DEMO_FOLDER="Chatbot-fari"
 
 cd "$WELCOME_SCREEN_DIR"
 #git pull origin main
