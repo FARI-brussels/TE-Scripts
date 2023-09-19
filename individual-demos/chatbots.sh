@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Demo repo and demo directory path on the sbc here
-DEMO_ID="11"
+DEMO_ID="13"
 WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
 WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
 DEMO_REPO="https://github.com/ShadhviVR/Chatbot-fari.git"
