@@ -22,6 +22,6 @@ kill -9 $(lsof -t -i:8551)
 gnome-terminal --working-directory=$DEMO_DIR/$DEMO_FOLDER -- bash -c "nohup python3 main.py"
 #run demo
 
-sleep 5
+sleep 10
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID" &
 
