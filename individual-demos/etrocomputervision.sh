@@ -2,10 +2,11 @@
 
 # Demo repo and demo directory path on the sbc here
 DEMO_ID="1"
-WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen-Fari_Internship"
+WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
+WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
 DEMO_REPO="git@github.com:FARI-brussels/demo-etro-visual-question-answering.git"
-DEMO_DIR="/home/fari/Documents/"
-DEMO_FOLDER="demo-etro-visual-question-answering"
+DEMO_DIR="/home/fari/Documents/demo-etro-visual-question-answering"
+
 
 # Assuming git_sync.sh and launch_demo.sh are in the same directory as this script
 SCRIPT_DIR="$(dirname "$0")"
