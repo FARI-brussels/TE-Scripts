@@ -17,6 +17,7 @@ rm -rf ~/.cache/chromium
 
 # Launch welcome screen in a new gnome terminal
 gnome-terminal --working-directory=$WELCOME_SCREEN_PATH -- bash -c 'nohup python server.py'
+chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
 
 
 
