@@ -17,7 +17,7 @@ kill -9 $(lsof -t -i:8080)
 #remove chromium cache
 rm -rf ~/.cache/chromium
 #launch welcome screen
-gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -- bash -c 'nohup python server.py' -T "Welcome Screen"
+gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -- bash -c 'nohup python server.py' 
 
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
 

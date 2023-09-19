@@ -20,8 +20,7 @@ kill -9 $(lsof -t -i:8080)
 # Remove chromium cache
 rm -rf ~/.cache/chromium
 # Launch welcome screen in a new gnome terminal
-gnome-terminal --working-directory=$WELCOME_SCREEN_PATH -- bash -c 'nohup python server.py' -T "Welcome Screen"
-chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
+
 
 
 #DEMOOOO
@@ -30,4 +29,7 @@ chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
 #run demo
 #kill process on port 3000
 kill -9 $(lsof -t -i:3000)
+
+gnome-terminal --working-directory=$WELCOME_SCREEN_PATH -- bash -c 'nohup python server.py' 
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev" 
+chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
