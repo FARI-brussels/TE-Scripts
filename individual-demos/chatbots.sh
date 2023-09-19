@@ -37,7 +37,7 @@ fi
 #run demo
 
 #kill process on port 3000
-kill -9 $(lsof -t -i:8080)
+kill -9 $(lsof -t -i:3000)
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev" 
 
 #lauch welcome screen
