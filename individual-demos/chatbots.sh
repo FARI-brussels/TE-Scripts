@@ -36,5 +36,9 @@ fi
 
 #run demo
 
+#kill process on port 3000
+kill -9 $(lsof -t -i:8080)
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev" 
+
+#lauch welcome screen
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
