@@ -18,7 +18,5 @@ rm -rf ~/.cache/chromium
 # Launch welcome screen in a new gnome terminal
 gnome-terminal --working-directory=$WELCOME_SCREEN_PATH -- bash -c 'nohup python server.py' -T "Welcome Screen"
 
-# Give a few seconds for the server to start
-sleep 3
 
 
