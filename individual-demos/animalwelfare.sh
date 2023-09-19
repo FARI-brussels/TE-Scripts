@@ -2,6 +2,7 @@
 
 # Demo repo and demo directory path on the sbc here
 DEMO_ID="0"
+
 WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
 WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
 DEMO_REPO="https://github.com/FARI-brussels/demo-iridia-animal-welfare.git"
@@ -22,7 +23,7 @@ kill -9 $(lsof -t -i:8080)
 #remove chromium cache
 rm -rf ~/.cache/chromium
 #launch welcome screen
-gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -- 'nohup python server.py' -T "Welcome Screen"
+gnome-terminal --working-directory=$WELCOME_SCREEN_DIR -- bash -c 'nohup python server.py' -T "Welcome Screen"
 
 # Check if the directory exists
 if [ -d "$DEMO_DIR" ]; then
