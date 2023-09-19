@@ -23,3 +23,6 @@ SCRIPT_DIR="$(dirname "$0")"
 #kill process on port 3000
 kill -9 $(lsof -t -i:3000)
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev" 
+
+# browser
+chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"

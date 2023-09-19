@@ -21,5 +21,4 @@ gnome-terminal --working-directory=$WELCOME_SCREEN_PATH -- bash -c 'nohup python
 # Give a few seconds for the server to start
 sleep 3
 
-# Launch welcome screen in chromium-browser
-chromium-browser --kiosk "http://localhost:8080/$DEMO_ID"
+
