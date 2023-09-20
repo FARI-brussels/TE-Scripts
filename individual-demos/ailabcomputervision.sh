@@ -10,7 +10,7 @@ SCRIPT_DIR="$(dirname "$0")"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
 
 
-terminator --working-directory=$WELCOME_SCREEN_DIR -e "bash -c 'python main.py --id $DEMO_ID'"
+xfce4-terminal --working-directory=$WELCOME_SCREEN_DIR -e "bash -c 'python main.py --id $DEMO_ID'"
 echo lol
 killall chromium-browser
 chromium-browser --kiosk "http://127.0.0.1:8550"
