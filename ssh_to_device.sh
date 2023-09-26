@@ -1,12 +1,39 @@
-argument : 
-- mac adress
-- host name
+#!/bin/bash
 
-process : 
-- look up on the CMS for the ip corresponding to the mac adress
-- ping to that ip,
- 
- if the ip not accessible the run the update_ips script and look up cms for new ip 
+CMS_URL="http://46.226.110.124:1337/api/devices"
+UPDATE_IPS_SCRIPT="./update_ips.sh" # You should provide the correct path to your script
 
-ssh to host name and ip.
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <device_name>"
+    exit 1
+fi
 
+device_name="$1"
+
+# Function to get IP from CMS
+get_ip_from_cms() {
+    local name="$1"
+    curl -s "$CMS_URL" | jq -r --arg name "$name" '.data[] | select(.attributes.device_id == $name) | .attributes.ip'
+}
+
+# Get IP from CMS
+ip=$(get_ip_from_cms "$device_name")
+
+
+# Ping the IP
+if ! ping -c 1 "$ip" &> /dev/null; then
+    echo "IP $ip is not accessible. Running the update_ips script..."
+    "$UPDATE_IPS_SCRIPT"
+    
+    # Look up CMS for the new IP
+    ip=$(get_ip_from_cms "$device_name")
+fi
+
+# SSH to the device
+if [ -n "$ip" ]; then
+    echo "SSHing to $device_name with IP $ip..."
+    ssh "fari@$ip"
+else
+    echo "Couldn't find an IP for $device_name."
+    exit 1
+fi

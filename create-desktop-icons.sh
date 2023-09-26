@@ -1,6 +1,6 @@
 #!/bin/bash
-TITLES=("Animal Welfare" "Etro Computer Vision" "Simplex" "Smart prothese" "Exoskeletons" "Which Content is real" "Brickiebot")
-PREFIX=("animalwelfare" "etrocomputervision" "simplex" "smartprothesis" "exoskeletons" "whichcontentisreal" "brickiebot")
+TITLES=("Animal Welfare" "Etro Computer Vision" "Simplex" "Smart prothese" "Exoskeletons" "Which Content is real" "Brickiebot" "Chatbots")
+PREFIX=("animalwelfare" "etrocomputervision" "simplex" "smartprothesis" "exoskeletons" "whichcontentisreal" "brickiebot" "chatbots")
 cd /home/fari/Desktop
 for ((i=0; i< ${#TITLES[@]}; i++));
 do  
@@ -13,4 +13,5 @@ Type=Application
 Comment=Start demo"
 echo "$content"> "${PREFIX[$i]}.desktop"
 gio set /home/fari/Desktop/${PREFIX[$i]}.desktop metadata::trusted true
+chmod +x /home/fari/Documents/TE-Scripts/individual-demos/${PREFIX[$i]}.sh
 done
