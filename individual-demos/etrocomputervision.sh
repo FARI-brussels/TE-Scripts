@@ -17,7 +17,7 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 #kill process on port 8551
 kill -9 $(lsof -t -i:8551)
-gnome-terminal --working-directory=$DEMO_DIR/$DEMO_FOLDER -- bash -c "nohup python3 main.py"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python3 main.py"
 #run demo
 
 sleep 10
