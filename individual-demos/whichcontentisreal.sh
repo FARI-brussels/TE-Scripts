@@ -6,10 +6,7 @@ WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
 WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
 DEMO_REPO="https://github.com/FARI-brussels/demo-fari-which-content-is-real.git"
 DEMO_DIR="/home/fari/Documents/demo-fari-which-content-is-real"
-
-
-# Assuming git_sync.sh and launch_demo.sh are in the same directory as this script
-SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 # Use git_sync.sh to sync both repositories
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
