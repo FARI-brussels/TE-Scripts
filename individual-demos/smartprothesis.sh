@@ -10,3 +10,4 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 "$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
 
 
+xdotool key Escape
