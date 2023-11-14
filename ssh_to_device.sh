@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CMS_URL="http://46.226.110.124:1337/api/devices"
-UPDATE_IPS_SCRIPT="sudo ./update_ips.sh" # You should provide the correct path to your script
+UPDATE_IPS_SCRIPT="update_ips.sh" # You should provide the correct path to your script
 
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <device_name>"
@@ -23,7 +23,7 @@ ip=$(get_ip_from_cms "$device_name")
 # Ping the IP
 if ! ping -c 1 "$ip" &> /dev/null; then
     echo "IP $ip is not accessible. Running the update_ips script..."
-    "$UPDATE_IPS_SCRIPT"
+    sudo bash "$UPDATE_IPS_SCRIPT"
     
     # Look up CMS for the new IP
     ip=$(get_ip_from_cms "$device_name")
