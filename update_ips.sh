@@ -42,6 +42,5 @@ echo "$response" | jq -r '.data[] | @base64' | while read device_encoded; do
                 }"
 
     fi
-# ... [rest of the script]
 
 done
