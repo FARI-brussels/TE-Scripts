@@ -25,7 +25,7 @@ The `animalwelfare.sh` script sets up the Animal Welfare demonstration. It syncs
 The codebase leverages a variety of Linux utilities, such as `curl`, `jq`, `awk`, `arp-scan`, `xdotool`, and relies on external software like Flask, Python, Git, and Chromium-browser. The scripts interact with a specific CMS that manages device information and are reliant on network access to function properly.
 
 ### Environment and Setup
-To replicate the environment the scripts are intended to run in, one must ensure that all dependent programs (`curl`, `jq`, `git`, `python`, `flask`, `xdotool`, `arp-scan`) are installed on the SBCs. This should be the case if you use one of the custom fari image availlable in the [T&E technical documenation](https://te-technical-documentation.readthedocs.io/en/latest/)
+To replicate the environment the scripts are intended to run in, one must ensure that all dependent programs (`curl`, `jq`, `git`, `python`, `flask`, `xdotool`, `arp-scan`) are installed on the SBCs. This should be the case if you use one of the custom fari image availlable in the [T&E technical documenation](https://te-technical-documentation.readthedocs.io/en/latest/) or if you follow the [instruction](https://te-technical-documentation.readthedocs.io/en/latest/components.html#setting-up-a-fari-image-for-a-new-sbc-type) for setting up a nex distro
 
 The SBCs should be registered in the Content Management System, so that its mac address can be fetched. 
 
