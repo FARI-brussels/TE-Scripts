@@ -39,7 +39,17 @@ This codebase documentation provides an overarching view of the scripts used to 
 - `update_ips.sh`: Uses `curl` to fetch devices from the CMS and `arp-scan` to identify devices on the network. It updates the CMS with new IP addresses if they have changed.
 - `enable_autologin.sh`: Configures autologin for user `fari` by modifying `lightdm` configuration in `/etc/lightdm/lightdm.conf.d`.
 - `create-desktop-icons.sh`: Iterates through an array of titles and prefixes to create `.desktop` entries for creating a desktop icon for direct launching of demos.
-- `clone_or_pull_repo.sh`: Clones or pulls a repository into a specified directory, ensuring the latest code is present.
+
+- `clone_or_pull_repo.sh`: 
+  - **Purpose**: Clones or pulls a repository into a specified directory, ensuring the latest code is present.
+  - **Input Parameters**:
+    - **LOCAL_PATH**: The local directory path for cloning or updating the repository.
+    - **REPO_URL**: The URL of the Git repository to clone or pull.
+  - **Output**: Console messages indicating status of operations (cloning or updating).
+  - **Example Usage**:
+    - To clone a new repository: ``./clone_or_pull_repo.sh /path/to/new/repo https://github.com/user/newrepo.git``
+    - To update an existing repository: ``./clone_or_pull_repo.sh /path/to/existing/repo``
+
 - `launch_welcome_screen.sh`: Kills any existing process on port 8080, clears Chromium's cache, and launches a Python server for the welcome screen, followed by opening Chromium in kiosk mode.
 - `update_all_devices.sh`: Iteratively calls `ssh_to_device.sh` to run `command.sh` on each device registered in the CMS. This use this script : create or modify the `command.sh` and append the line that you want to execute on all devices. The run the `update_all_devices.sh` script.
 - `ssh_to_device.sh`: Attempts to establish an SSH connection to a device by name, fetching its IP from the CMS and re-running `update_ips.sh` if necessary.
