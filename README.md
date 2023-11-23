@@ -36,9 +36,53 @@ This codebase documentation provides an overarching view of the scripts used to 
 
 ### Individual Script Details
 
-- `update_ips.sh`: Uses `curl` to fetch devices from the CMS and `arp-scan` to identify devices on the network. It updates the CMS with new IP addresses if they have changed.
-- `enable_autologin.sh`: Configures autologin for user `fari` by modifying `lightdm` configuration in `/etc/lightdm/lightdm.conf.d`.
-- `create-desktop-icons.sh`: Iterates through an array of titles and prefixes to create `.desktop` entries for creating a desktop icon for direct launching of demos.
+- `update_ips.sh`:
+  - **Purpose**: Updates the IP addresses of devices in the CMS based on the results from an `arp-scan`. The script fetches the current IPs from the CMS, compares them with the local network scan results, and updates the CMS if there are discrepancies.
+  - **Input Parameters**:
+    - No direct input parameters. The script automatically fetches device data from a predefined CMS URL and performs an `arp-scan`.
+  - **Output**:
+    - Console messages showing the IDs and IPs of the devices, and notifications about IP mismatches and updates.
+    - Updates the CMS with the new IP addresses when discrepancies are found.
+  - **Example Usage**:
+    - To update the IP addresses of devices: ``./update_ips.sh``
+  - **Additional Notes**:
+    - The script assumes that the CMS API is accessible and that the device data structure in the CMS matches the expected format.
+    - It requires `curl`, `jq`, and `arp-scan` to be installed on the system.
+    - The script does not implement authentication for CMS access, which may be a security concern.
+    - There is no handling for potential errors during the CMS update process.
+
+- `enable_autologin.sh`:
+  - **Purpose**: Enables autologin for a specified user (in this case, 'fari') on Single Board Computers (SBCs) by modifying the LightDM configuration file. This eliminates the need to enter a password at startup.
+  - **Input Parameters**:
+    - No direct input parameters. The script works with a predefined file path (`/etc/lightdm/lightdm.conf.d/11-armbian.conf`).
+  - **Output**:
+    - Console messages indicating success or failure of the operation.
+    - Modifies the LightDM configuration file to enable autologin.
+  - **Example Usage**:
+    - To enable autologin: ``sudo ./enable_autologin.sh``
+  - **Additional Notes**:
+    - The script assumes that the LightDM configuration file exists at the specified path.
+    - It requires `sudo` privileges to modify the LightDM configuration file.
+    - The script creates a temporary file during its operation, which is removed before the script ends.
+    - If the LightDM configuration file does not exist, the script notifies the user and exits without making changes.
+
+- `create-desktop-icons.sh`:
+    ⚠️ Not maintained/used anymore
+  - **Purpose**: Creates desktop icons for various demonstrations. The script iterates through arrays of titles and prefixes, generating `.desktop` entries. Each entry is configured to launch a specific demonstration script.
+  - **Input Parameters**:
+    - **TITLES**: An array of titles for the desktop icons.
+    - **PREFIX**: Corresponding array of prefixes used to name the `.desktop` files and to specify the execution paths of the demonstration scripts.
+  - **Output**:
+    - Desktop icon files are created on the user's desktop (`/home/fari/Desktop`).
+    - Sets the executable permission for each demonstration script and marks the `.desktop` files as trusted.
+    - Console output is minimal, primarily from `gio` and `chmod` commands.
+  - **Example Usage**:
+    - To create desktop icons: ``./create-desktop-icons.sh``
+  - **Additional Notes**:
+    - The script is tailored for a specific user directory (`/home/fari`) and assumes the existence of certain paths and files (like the demonstration scripts and icon images).
+    - The demonstration scripts (`*.sh` files) need to exist in `/home/fari/Documents/TE-Scripts/individual-demos/`.
+    - It also assumes the GNOME desktop environment, as it uses `gio` to set metadata properties on the `.desktop` files.
+
 
 - `clone_or_pull_repo.sh`: 
   - **Purpose**: Clones or pulls a repository into a specified directory, ensuring the latest code is present.
@@ -50,8 +94,43 @@ This codebase documentation provides an overarching view of the scripts used to 
     - To clone a new repository: ``./clone_or_pull_repo.sh /path/to/new/repo https://github.com/user/newrepo.git``
     - To update an existing repository: ``./clone_or_pull_repo.sh /path/to/existing/repo``
 
-- `launch_welcome_screen.sh`: Kills any existing process on port 8080, clears Chromium's cache, and launches a Python server for the welcome screen, followed by opening Chromium in kiosk mode.
-- `update_all_devices.sh`: Iteratively calls `ssh_to_device.sh` to run `command.sh` on each device registered in the CMS. This use this script : create or modify the `command.sh` and append the line that you want to execute on all devices. The run the `update_all_devices.sh` script.
-- `ssh_to_device.sh`: Attempts to establish an SSH connection to a device by name, fetching its IP from the CMS and re-running `update_ips.sh` if necessary.
+- `launch_welcome_screen.sh`:
+  - **Purpose**: Launches a demo-specific welcome screen by terminating any process on port 8080, clearing the Chromium browser's cache, initiating a Python server, and opening Chromium in kiosk mode with the demo.
+  - **Input Parameters**:
+    - **WELCOME_SCREEN_PATH**: The directory path where the welcome screen files, including `server.py`, are located.
+    - **DEMO_ID**: Identifier for the specific demo to be displayed on the welcome screen.
+  - **Output**:
+    - Console messages related to process termination, cache clearing, and server/browser launching.
+    - Chromium browser opens in kiosk mode displaying the welcome screen for the specified demo.
+  - **Example Usage**:
+    - To launch a welcome screen: ``./launch_welcome_screen.sh /path/to/welcome_screen demo123``
+
+- `update_all_devices.sh`:
+  - **Purpose**: Iteratively updates all devices registered in the CMS by executing a specified command on each device. This is achieved by calling `ssh_to_device.sh` for each device to run `command.sh`.
+  - **Input Parameters**:
+    - This script does not take direct input parameters. Instead, it relies on `command.sh` containing the command to execute on all devices.
+  - **Output**:
+    - Console messages indicating the status of updates on each device.
+  - **Example Usage**:
+    - To update all devices: First, create or modify `command.sh` with the desired command, then run ``./update_all_devices.sh``.
+  - **Additional Notes**:
+    - The user must ensure that `command.sh` is correctly set up with the necessary command(s) before executing this script (ensure also that the script is executable).
+    - This script depends on `ssh_to_device.sh` for SSH access to each device, which in turn requires that each device is accessible and properly configured for SSH.
+
+- `ssh_to_device.sh`:
+  - **Purpose**: Establishes an SSH connection to a specific device by its name. It fetches the device's IP address from the CMS, updates the IP addresses if necessary, and then initiates an SSH connection.
+  - **Input Parameters**:
+    - **device_name**: The name of the device to which an SSH connection is to be established.
+  - **Output**:
+    - Console messages indicating the process of fetching IP, checking accessibility, updating IPs (if needed), and attempting SSH connection.
+    - Initiates an SSH session to the specified device if successful.
+  - **Example Usage**:
+    - To SSH into a device: ``./ssh_to_device.sh device123``
+  - **Additional Notes**:
+    - The script relies on the availability and correctness of the IP addresses in the CMS.
+    - If the device is not reachable initially, it runs `update_ips.sh` to refresh the IPs from the CMS.
+    - The user must have SSH access set up for the target device, and the script assumes SSH access as the user `fari`.
+    - Error handling includes a check for IP accessibility and an exit if the IP cannot be found.
+
 
 **Note:** The provided documentation captures the overarching structure and functionality of the codebase, excluding the detailed code content. The analysis does not enumerate specific implementations within each file or script due to constraints of the medium, but provides a sufficient high-level understanding.
