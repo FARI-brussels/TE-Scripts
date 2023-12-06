@@ -15,4 +15,4 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 #run demo
 #kill process on port 5000
 kill -9 $(lsof -t -i:5000)
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python server.py"
+gnome-terminal --working-directory=$DEMO_DIR/frontend -- bash -c "nohup python server.py"
