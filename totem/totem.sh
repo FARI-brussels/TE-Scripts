@@ -4,7 +4,7 @@ TOTEM_INTERFACE_REPO="https://github.com/FARI-brussels/Totem-Interface"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 # Use git_sync.sh to sync both repositories
-"$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
+"$SCRIPT_DIR/clone_or_pull_repo.sh" "$TOTEM_INTERFACE_DIR" "$TOTEM_INTERFACE_REPO"
 
 # Launch the welcome screen using launch_welcome_screen.sh
 # Kill process on port 8080
