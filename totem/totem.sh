@@ -15,7 +15,8 @@ rm -rf ~/.cache/chromium
 
 # Launch welcome screen in a new gnome terminal
 gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'nohup python -m http.server 8080'
-chromium-browser --kiosk "http://localhost:8080" 
+
+gnome-terminal - bash -c 'chromium-browser --kiosk "http://localhost:8080"' 
 
 sleep 20
 #press escape for exiting menu in gnome (the menu mode is lauched on startup)
