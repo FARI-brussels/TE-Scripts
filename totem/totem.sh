@@ -14,7 +14,7 @@ kill -9 $(lsof -t -i:8080)
 rm -rf ~/.cache/chromium
 
 # Launch welcome screen in a new gnome terminal
-gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'nohup python -m http.server 8080'
+gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'git checkout marieke && nohup python -m http.server 8080'
 
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:8080"' 
 
