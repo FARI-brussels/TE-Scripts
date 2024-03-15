@@ -8,7 +8,7 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 
 #run demo
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python -m flask --app=app --debug run --host=0.0.0.0"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python -m flask --app=app --debug run --host=0.0.0.0 --port 8000 &"
 chromium-browser --kiosk "http://localhost:8000" &
 
 sleep 20
