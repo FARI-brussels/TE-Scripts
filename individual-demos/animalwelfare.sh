@@ -18,7 +18,7 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 
 #run demo
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python -m flask --app=app --debug run --host=0.0.0.0"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "flask run; echo 'Press exit to enter'; read"
 
 sleep 20
 #press escape for exiting menu in gnome (the menu mode is lauched on startup)
