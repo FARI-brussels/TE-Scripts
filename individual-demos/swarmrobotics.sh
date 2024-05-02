@@ -5,7 +5,8 @@ DEMO_REPO="https://github.com/FARI-brussels/demo-iridia-swarm-robotics.git"
 DEMO_DIR="/home/fari/Documents/demo-iridia-swarm-robotics"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 # Common ROS setup commands
-ROS_SETUP="source /opt/ros/noetic/setup.bash && export ROS_MASTER_URI=http://192.168.2.4:11311 && export ROS_HOSTNAME=192.168.2.4 && source ~/catkin_ws/devel/setup.bash &&"
+
+ROS_SETUP="source /opt/ros/noetic/setup.bash && export ROS_MASTER_URI=http://127.0.0.1:11311 && export ROS_HOSTNAME=127.0.0.1 && source ~/catkin_ws/devel/setup.bash &&"
 
 
 # Use git_sync.sh to sync both repositories
@@ -18,7 +19,7 @@ kill -9 $(lsof -t -i:5000)
 
 
 
-gnome-terminal -- bash -c "bash /home/fari/Documents/demo-iridia-swarm-robotics/launch_ros_and_arena-Ongoing.sh"
+gnome-terminal -- bash -c "bash /home/fari/Documents/demo-iridia-swarm-robotics/launch_ros_and_arena.sh"
 
 sleep 10
 
@@ -26,7 +27,7 @@ sleep 10
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP npm run dev -- --port=5000; echo 'Press Enter to exit'; read"
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP node server.js; echo 'Press Enter to exit'; read"
 
-gnome-terminal --working-directory=$DEMO_DIR/swarmexp -- bash -c "BROWSER=None PORT=3030 npm start 'Press Enter to exit'; read"
+gnome-terminal --working-directory=$DEMO_DIR/swarmexp -- bash -c "BROWSER=None PORT=3030 npm start; echo 'Press Enter to exit'; read"
 
 # Launch the welcome screen using launch_welcome_screen.sh
-"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
+"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID" firefox
