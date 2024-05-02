@@ -14,7 +14,7 @@ if [ -d "$LOCAL_PATH" ]; then
     # If it exists, navigate to the directory and pull the latest changes
     cd "$LOCAL_PATH" || exit
     echo "Updating the existing repo at $LOCAL_PATH ..."
-    git pull
+    git pull origin main:main
 else
     # If it doesn't exist, clone the repository into the specified path
     echo "Cloning repo from $REPO_URL to $LOCAL_PATH ..."

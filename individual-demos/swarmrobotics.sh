@@ -8,6 +8,21 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 ROS_SETUP="source /opt/ros/noetic/setup.bash && export ROS_MASTER_URI=http://127.0.0.1:11311 && export ROS_HOSTNAME=127.0.0.1 && source ~/catkin_ws/devel/setup.bash &&"
 
+# Function to check connectivity
+function check_connection() {
+    # Ping the Google DNS server to check for internet connectivity
+    ping -c 1 8.8.8.8 > /dev/null 2>&1
+    return $?
+}
+
+# Wait for connection
+until check_connection
+do
+    echo "Waiting for WiFi connection..."
+    sleep 5  # Check every 5 seconds
+done
+
+echo "Connected to WiFi."
 
 # Use git_sync.sh to sync both repositories
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"

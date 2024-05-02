@@ -23,7 +23,7 @@ fi
 rm -rf "$CACHE_DIR"
 
 # Launch welcome screen in a new gnome terminal
-gnome-terminal --working-directory="$WELCOME_SCREEN_PATH" -- bash -c 'nohup python server.py &'
+gnome-terminal --working-directory="$WELCOME_SCREEN_PATH" -- bash -c "python3 server.py; echo 'Press exit to enter'; read"
 
 # Launch the specified browser
 if [ "$BROWSER" = "firefox" ]; then
