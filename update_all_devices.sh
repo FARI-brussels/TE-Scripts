@@ -11,5 +11,5 @@ get_device_names_from_cms() {
 # For each device, run command.sh using SSH
 for device_name in $(get_device_names_from_cms); do
     echo "Running command.sh on $device_name..."
-    $SSH_TO_DEVICE_SCRIPT "$device_name" 'bash -s' < ./command.sh
+    "$SSH_TO_DEVICE_SCRIPT" "$device_name" "./command.sh"
 done

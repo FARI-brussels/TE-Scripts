@@ -40,6 +40,6 @@ def pdf_to_video(pdf_path, video_path, duration_per_slide=6):
 
 
 # Example usage
-pdf_path = 'totemFARIslideshow.pdf'
-video_path = 'ftyslideshow.mp4'
+pdf_path = 'conference.pdf'
+video_path = 'conference.mp4'
 pdf_to_video(pdf_path, video_path)
