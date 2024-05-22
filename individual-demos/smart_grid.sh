@@ -16,3 +16,7 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev -- --port=5000; echo 'Press Enter to exit'; read"
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run backend:dev; echo 'Press Enter to exit'; read"
+
+sleep 20
+#press escape for exiting menu in gnome (the menu mode is lauched on startup)
+xdotool key Escape
