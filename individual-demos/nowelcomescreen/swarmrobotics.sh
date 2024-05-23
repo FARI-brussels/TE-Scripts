@@ -40,6 +40,5 @@ gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP np
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP node server.js; echo 'Press Enter to exit'; read"
 
 
-# Launch the welcome screen using launch_welcome_screen.sh
-"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID" firefox
-gnome-terminal -- bash -c "chromium-browser --kiosk "http://localhost:5000" &
+
+firefox --kiosk "http://localhost:5000" &
