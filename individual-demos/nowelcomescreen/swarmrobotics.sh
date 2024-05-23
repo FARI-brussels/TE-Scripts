@@ -41,4 +41,4 @@ gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP no
 
 sleep 3
 
-gnome-terminal - bash -c "firefox --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
+gnome-terminal -- bash -c "firefox --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
