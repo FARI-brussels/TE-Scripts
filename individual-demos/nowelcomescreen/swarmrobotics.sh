@@ -39,6 +39,6 @@ sleep 10
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP npm run dev -- --port=5000; echo 'Press Enter to exit'; read"
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP node server.js; echo 'Press Enter to exit'; read"
 
+sleep 3
 
-
-firefox --kiosk "http://localhost:5000" &
+gnome-terminal - bash -c "firefox --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
