@@ -5,11 +5,14 @@ DEMO_REPO="https://github.com/m0satron/demo-smart-grid.git"
 DEMO_DIR="/home/fari/Documents/demo-smart-grid"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
-# Use git_sync.sh to sync both repositories
-# "$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
 
-# Launch the welcome screen using launch_welcome_screen.sh
-# "$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
+# Set the correct Node.js version using nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Use a specific Node.js version
+nvm use node
 
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$DEMO_DIR" "$DEMO_REPO"
 
@@ -21,9 +24,8 @@ kill -9 $(lsof -t -i:5000)
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev -- --port=5000; echo 'Press Enter to exit'; read"
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run backend:dev; echo 'Press Enter to exit'; read"
 
-gnome-terminal -- bash -c "chromium-browser --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
+gnome-terminal -- bash -c "firefox --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
 
-
-# sleep 20
+ sleep 2
 # #press escape for exiting menu in gnome (the menu mode is lauched on startup)
-# xdotool key Escape
+ xdotool key Escape
