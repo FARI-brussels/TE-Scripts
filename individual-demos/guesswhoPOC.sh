@@ -13,7 +13,8 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 #run demo
 #kill process on port 8000
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python server.py"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "python app.py; echo 'Press Enter to exit'; read"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "python websocket.py; echo 'Press Enter to exit'; read"
 
 DISPLAY=:0 chromium-browser --kiosk "http://localhost:5000" &
 DISPLAY=:1 chromium-browser --kiosk "http://localhost:5000/robot_view" &
