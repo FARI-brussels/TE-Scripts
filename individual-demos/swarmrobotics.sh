@@ -36,13 +36,12 @@ kill -9 $(lsof -t -i:5000)
 
 gnome-terminal -- bash -c "bash /home/fari/Documents/demo-iridia-swarm-robotics/launch_ros_and_arena.sh"
 
-sleep 10
+sleep 4
 
 
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP npm run dev -- --port=5000; echo 'Press Enter to exit'; read"
 gnome-terminal --working-directory=$DEMO_DIR/swarmcity -- bash -c "$ROS_SETUP node server.js; echo 'Press Enter to exit'; read"
 
-gnome-terminal --working-directory=$DEMO_DIR/swarmexp -- bash -c "BROWSER=None PORT=3030 npm start; echo 'Press Enter to exit'; read"
 
 # Launch the welcome screen using launch_welcome_screen.sh
 "$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID" firefox
