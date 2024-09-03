@@ -3,7 +3,7 @@
 DEMO_ID="12"
 WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
 WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
-DEMO_REPO="https://github.com/FARI-brussels/demo-which-content-is-real-v2.git"
+DEMO_REPO="https://github.com/FARI-brussels/demo-fari-which-content-is-real.git"
 DEMO_DIR="/home/fari/Documents/demo-fari-which-content-is-real"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
