@@ -1,6 +1,6 @@
 DEMO_ID="3"
 TOTEM_INTERFACE_DIR="/home/fari/Documents/Totem-Interface"
-TOTEM_INTERFACE_REPO="https://github.com/FARI-brussels/Totem-Interface"
+TOTEM_INTERFACE_REPO="https://github.com/FARI-brussels/totem-survey.git"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 # Use git_sync.sh to sync both repositories
@@ -8,15 +8,15 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 # Launch the welcome screen using launch_welcome_screen.sh
 # Kill process on port 8080
-kill -9 $(lsof -t -i:8080)
+kill -9 $(lsof -t -i:5173)
 
 # Remove chromium cache
 rm -rf ~/.cache/chromium
 
 # Launch welcome screen in a new gnome terminal
-gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'git checkout marieke && nohup python -m http.server 8080'
+gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run dev'
 
-gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:8080"' 
+gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"' 
 
 sleep 20
 #press escape for exiting menu in gnome (the menu mode is lauched on startup)

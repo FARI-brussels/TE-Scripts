@@ -13,7 +13,7 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 #run demo
 #kill process on port 5000
-kill -9 $(lsof -t -i:5000)
+kill -9 $(lsof -t -i:8080)
 
 
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate ultralytics && python backend.py; read -p 'Press enter to continue...'"
