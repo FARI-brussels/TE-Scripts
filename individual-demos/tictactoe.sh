@@ -17,7 +17,7 @@ export NVM_DIR="$HOME/.nvm"
 nvm use node
 
 #run backend
-gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python main.py --modes REAL; read -p 'Press enter to continue...'"
+#gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python main.py --modes REAL;"
 
 
 
