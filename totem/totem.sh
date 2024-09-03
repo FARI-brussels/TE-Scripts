@@ -15,6 +15,7 @@ rm -rf ~/.cache/chromium
 
 # Launch welcome screen in a new gnome terminal
 gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run dev'
+gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run backend:dev'
 
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"' 
 
