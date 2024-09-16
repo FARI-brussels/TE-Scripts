@@ -19,7 +19,7 @@ nvm use node
 #run backend
 #gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python main.py --modes REAL;"
 
-
+gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python websocket.py;"
 
 #kill process on port 5000
 kill -9 $(lsof -t -i:5000)
