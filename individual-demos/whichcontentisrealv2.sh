@@ -4,22 +4,28 @@ DEMO_REPO="https://github.com/FARI-brussels/demo-which-content-is-real-v2.git"
 DEMO_DIR="/home/fari/Documents/demo-fari-which-content-is-real-v2"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
-
+# Clone or pull the latest version of the repository
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$DEMO_DIR" "$DEMO_REPO"
 
 # Remove chromium cache
 rm -rf ~/.cache/chromium
 
+# Kill any process using port 5173 (if running)
 kill -9 $(lsof -t -i:5173)
 
+# Navigate to the demo directory and run npm install
+cd "$DEMO_DIR"
+npm install
 
+# Launch welcome screen in a new gnome terminal after npm install completes
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev; echo 'Press Enter to exit'; read"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run backend:dev; echo 'Press Enter to exit'; read"
 
-# Launch welcome screen in a new gnome terminal
-gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run dev'
-gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run backend:dev'
+# Open Chromium in kiosk mode
+gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
 
-gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"' 
+# Wait for the system to initialize (sleep for 20 seconds)
+sleep 5
 
-sleep 20
-#press escape for exiting menu in gnome (the menu mode is lauched on startup)
+# Press Escape to exit the menu in Gnome (if needed)
 xdotool key Escape
