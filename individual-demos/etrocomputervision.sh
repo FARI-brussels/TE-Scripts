@@ -27,3 +27,5 @@ sleep 10
 sleep 10
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID" &
 
+sleep 10  
+xdotool key F11
