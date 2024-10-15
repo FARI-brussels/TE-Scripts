@@ -12,13 +12,17 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$DEMO_DIR" "$DEMO_REPO"
 
-# Launch the welcome screen using launch_welcome_screen.sh
-"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
-
 #kill process on port 8551
 kill -9 $(lsof -t -i:8551)
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python3 main.py"
 #run demo
+
+sleep 10
+
+# Launch the welcome screen using launch_welcome_screen.sh
+"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
+
+
 
 sleep 10
 chromium-browser --kiosk "http://localhost:8080/$DEMO_ID" &
