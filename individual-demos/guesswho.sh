@@ -11,15 +11,6 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$BACKEND_DIR" "$BACKEND_REPO"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$FRONTEND_DIR" "$FRONTEND_REPO"
 
-# Set the correct Node.js version using nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Use a specific Node.js version
-nvm use node
-
-
 # Remove chromium cache
 rm -rf ~/.cache/chromium
 
