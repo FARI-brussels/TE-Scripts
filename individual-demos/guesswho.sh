@@ -19,6 +19,17 @@ export NVM_DIR="$HOME/.nvm"
 # Use a specific Node.js version
 nvm use node
 
+
+# Remove chromium cache
+rm -rf ~/.cache/chromium
+
+# Kill any process using port 5173 (if running)
+kill -9 $(lsof -t -i:5173)
+
+# Navigate to the demo directory and run npm install
+cd "$FRONTEND_DIR"
+npm install
+
 #run backend
 #gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python main.py --modes REAL;"
 
