@@ -40,4 +40,4 @@ gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run backend:dev
 
 
 DISPLAY=:0 chromium-browser --kiosk "http://localhost:5173" &
-DISPLAY=:0 chromium-browser --kiosk "http://localhost:5173" &
+DISPLAY=:1 chromium-browser --kiosk "http://localhost:5173" &
