@@ -14,10 +14,13 @@ export NVM_DIR="$HOME/.nvm"
 # Use a specific Node.js version
 nvm use node
 
-npm install
+
 
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$DEMO_DIR" "$DEMO_REPO"
 
+cd $DEMO_DIR 
+
+npm install
 
 # Kill process on port 8080
 kill -9 $(lsof -t -i:5000)
@@ -27,6 +30,6 @@ gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev -- --port=5
 
 gnome-terminal -- bash -c "firefox --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
 
- sleep 2
+sleep 2
 # #press escape for exiting menu in gnome (the menu mode is lauched on startup)
- xdotool key Escape
+xdotool key Escape
