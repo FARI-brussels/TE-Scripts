@@ -39,5 +39,8 @@ gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run dev; read -
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run backend:dev; read -p 'Press enter to continue...'"
 
 
-DISPLAY=:0 chromium-browser --kiosk "http://localhost:5173" &
-DISPLAY=:1 chromium-browser --kiosk "http://localhost:5173" &
+gnome-terminal -- bash -c "chromium-browser --kiosk 'http://localhost:5173'; read -p 'Press enter to continue...'"
+gnome-terminal -- bash -c "firefox --kiosk 'http://localhost:5173/info'; read -p 'Press enter to continue...'"
+sleep 10
+xdotool search --onlyvisible --class chromium-browser windowmove 1080 0
+xdotool key Escape
