@@ -12,7 +12,8 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$FRONTEND_DIR" "$FRONTEND_REPO"
 
 
-xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 1 1 0 0 0 0 1
+#xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 1 1 0 0 0 0 1
+xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 0.5 1 0 0 0 0 1
 
 
 # Remove chromium cache
@@ -38,9 +39,9 @@ gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run dev; read -
 
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run backend:dev; read -p 'Press enter to continue...'"
 
-
-gnome-terminal -- bash -c "chromium-browser --kiosk 'http://localhost:5173'; read -p 'Press enter to continue...'"
 gnome-terminal -- bash -c "firefox --kiosk 'http://localhost:5173/info'; read -p 'Press enter to continue...'"
+gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:5173'; read -p 'Press enter to continue...'"
+
 sleep 10
-xdotool search --onlyvisible --class chromium-browser windowmove 1080 0
+xdotool search --onlyvisible --class firefox windowmove 1080 0
 xdotool key Escape
