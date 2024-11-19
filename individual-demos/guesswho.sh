@@ -12,6 +12,15 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$FRONTEND_DIR" "$FRONTEND_REPO"
 
 
+# Set the correct Node.js version using nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Use a specific Node.js version
+nvm use node
+
+
 #xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 1 1 0 0 0 0 1
 xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 0.5 1 0 0 0 0 1
 
@@ -40,6 +49,7 @@ gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run dev; read -
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run backend:dev; read -p 'Press enter to continue...'"
 
 gnome-terminal -- bash -c "firefox --kiosk 'http://localhost:5173/info'; read -p 'Press enter to continue...'"
+sleep 4
 gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:5173'; read -p 'Press enter to continue...'"
 
 sleep 10
