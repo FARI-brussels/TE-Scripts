@@ -22,7 +22,7 @@ nvm use node
 
 
 #xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 1 1 0 0 0 0 1
-xinput set-prop 11 'Coordinate Transformation Matrix' 0 -0.5 0.5 1 0 0 0 0 1
+xinput set-prop 6 'Coordinate Transformation Matrix' 0 -0.5 0.5 1 0 0 0 0 1
 
 
 # Remove chromium cache
