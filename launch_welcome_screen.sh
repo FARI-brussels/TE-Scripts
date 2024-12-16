@@ -27,9 +27,9 @@ gnome-terminal --working-directory="$WELCOME_SCREEN_PATH" -- bash -c "python3 se
 
 # Launch the specified browser
 if [ "$BROWSER" = "firefox" ]; then
-    firefox --kiosk "http://localhost:8080/$DEMO_ID" &
+    firefox --kiosk --disable-pinch "http://localhost:8080/$DEMO_ID" &
 else
-    chromium-browser --kiosk "http://localhost:8080/$DEMO_ID" &
+    chromium-browser --disable-pinch --kiosk "http://localhost:8080/$DEMO_ID" &
 fi
 
 
