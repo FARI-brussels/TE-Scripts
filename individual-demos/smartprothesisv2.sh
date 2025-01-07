@@ -18,8 +18,8 @@ cd "$DEMO_DIR"
 npm install
 
 # Launch welcome screen in a new gnome terminal after npm install completes
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev; echo 'Press Enter to exit'; read"
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run backend:dev; echo 'Press Enter to exit'; read"
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run demo --slug=smart-prosthetes; echo 'Press Enter to exit'; read"
+
 
 # Open Chromium in kiosk mode
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'

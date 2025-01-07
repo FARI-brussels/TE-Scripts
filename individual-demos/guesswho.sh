@@ -44,10 +44,6 @@ gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "python app.py; read 
 #run frontend
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run dev; read -p 'Press enter to continue...'"
 
-
-
-gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run backend:dev; read -p 'Press enter to continue...'"
-
 gnome-terminal -- bash -c "firefox --kiosk 'http://localhost:5173/info'; read -p 'Press enter to continue...'"
 sleep 4
 gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:5173'; read -p 'Press enter to continue...'"
