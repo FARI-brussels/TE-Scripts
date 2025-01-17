@@ -1,5 +1,5 @@
 TOTEM_INTERFACE_DIR="/home/fari/Documents/Totem-Interface"
-TOTEM_INTERFACE_REPO="https://github.com/FARI-brussels/totem-survey.git"
+TOTEM_INTERFACE_REPO="https://github.com/FARI-brussels/totem-v1.git"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 # Use git_sync.sh to sync both repositories
@@ -14,7 +14,7 @@ rm -rf ~/.cache/chromium
 
 # Launch welcome screen in a new gnome terminal
 gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run dev'
-gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run backend:dev'
+# gnome-terminal --working-directory=$TOTEM_INTERFACE_DIR -- bash -c 'npm run backend:dev'
 
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"' 
 
