@@ -29,9 +29,11 @@ npm install
 # Launch welcome screen in a new gnome terminal after npm install completes
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run demo --slug=animal-welfare; echo 'Press Enter to exit'; read"
 
-
 # Open Chromium in kiosk mode
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
+
+#run demo
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "flask run; echo 'Press exit to enter'; read"
 
 # Wait for the system to initialize (sleep for 20 seconds)
 sleep 5
