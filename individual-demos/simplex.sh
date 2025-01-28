@@ -5,6 +5,9 @@ FRONTEND_DIR="/home/fari/Documents/Welcome-Screen-v2"
 
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
+# Check and set up NVM and Node.js LTS
+"$SCRIPT_DIR/check_nvm_and_node.sh"
+
 # Clone or pull the latest version of the repository
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$FRONTEND_DIR" "$FRONTEND_REPO"
 
@@ -12,6 +15,8 @@ SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
 
 # Use a specific Node.js version
 nvm use node
