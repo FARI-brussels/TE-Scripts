@@ -1,25 +1,31 @@
 #!/bin/bash
-
 # Demo repo and demo directory path on the sbc here
-DEMO_ID="52"
-
-WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
-WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
-DEMO_REPO="https://github.com/FARI-brussels/demo-iridia-animal-welfare.git"
-DEMO_DIR="/home/fari/Documents/demo-iridia-animal-welfare"
+DEMO_REPO="https://github.com/FARI-brussels/Welcome-Screen-v2.git"
+DEMO_DIR="/home/fari/Documents/Welcome-Screen-v2"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
-# Use git_sync.sh to sync both repositories
-"$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
+# Clone or pull the latest version of the repository
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$DEMO_DIR" "$DEMO_REPO"
 
-# Launch the welcome screen using launch_welcome_screen.sh
-"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
+# Remove chromium cache
+rm -rf ~/.cache/chromium
+
+# Kill any process using port 5173 (if running)
+kill -9 $(lsof -t -i:5173)
+
+# Navigate to the demo directory and run npm install
+cd "$DEMO_DIR"
+npm install
+
+# Launch welcome screen in a new gnome terminal after npm install completes
+gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run demo --slug=animal-welfare; echo 'Press Enter to exit'; read"
 
 
-#run demo
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "flask run; echo 'Press exit to enter'; read"
+# Open Chromium in kiosk mode
+gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
 
-sleep 20
-#press escape for exiting menu in gnome (the menu mode is lauched on startup)
+# Wait for the system to initialize (sleep for 20 seconds)
+sleep 5
+
+# Press Escape to exit the menu in Gnome (if needed)
 xdotool key Escape
