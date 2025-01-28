@@ -37,7 +37,9 @@ gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run demo --slug
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
 
 #run demo
-gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "flask run; echo 'Press exit to enter'; read"
+gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "nohup python3 main.py; echo 'Press exit to enter'; read"
+
+
 
 # Wait for the system to initialize (sleep for 20 seconds)
 sleep 5
