@@ -1,31 +1,46 @@
 #!/bin/bash
-
 # Demo repo and demo directory path on the sbc here
-DEMO_ID="53"
-WELCOME_SCREEN_DIR="/home/fari/Documents/Welcome-Screen"
-WELCOME_SCREEN_REPO="https://github.com/FARI-brussels/welcome-screen"
-DEMO_REPO="git@github.com:FARI-brussels/demo-etro-visual-question-answering.git"
-DEMO_DIR="/home/fari/Documents/demo-etro-visual-question-answering"
+FRONTEND_REPO="https://github.com/FARI-brussels/Welcome-Screen-v2.git"
+FRONTEND_DIR="/home/fari/Documents/Welcome-Screen-v2"
+
+BACKEND_REPO="https://github.com/FARI-brussels/demo-etro-visual-question-answering"
+BACKEND_DIR="/home/fari/Documents/demo-etro-visual-question-answering"
+
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
-# Use git_sync.sh to sync both repositories
-"$SCRIPT_DIR/clone_or_pull_repo.sh" "$WELCOME_SCREEN_DIR" "$WELCOME_SCREEN_REPO"
-"$SCRIPT_DIR/clone_or_pull_repo.sh" "$DEMO_DIR" "$DEMO_REPO"
+# Clone or pull the latest version of the repository
+"$SCRIPT_DIR/clone_or_pull_repo.sh" "$BACKEND_DIR" "$BACKEND_REPO"
+"$SCRIPT_DIR/clone_or_pull_repo.sh" "$FRONTEND_DIR" "$FRONTEND_REPO"
 
-#kill process on port 8551
-kill -9 $(lsof -t -i:8551)
-gnome-terminal --working-directory=$DEMO_DIR -- bash -c "nohup python3 main.py"
+# Set the correct Node.js version using nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Use a specific Node.js version
+nvm use node
+
+# Remove chromium cache
+rm -rf ~/.cache/chromium
+
+# Kill any process using port 5173 (if running)
+kill -9 $(lsof -t -i:5173)
+
+# Navigate to the demo directory and run npm install
+cd "$FRONTEND_DIR"
+npm install
+
+# Launch welcome screen in a new gnome terminal after npm install completes
+gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run demo --slug=computer-image-analysis; echo 'Press Enter to exit'; read"
+
+# Open Chromium in kiosk mode
+gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
+
 #run demo
+gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "flask run; echo 'Press exit to enter'; read"
 
-sleep 10
+# Wait for the system to initialize (sleep for 20 seconds)
+sleep 5
 
-# Launch the welcome screen using launch_welcome_screen.sh
-"$SCRIPT_DIR/launch_welcome_screen.sh" "$WELCOME_SCREEN_DIR" "$DEMO_ID"
-
-
-
-sleep 10
-chromium-browser --kiosk "http://localhost:8080/$DEMO_ID" &
-
-sleep 10  
-xdotool key F11
+# Press Escape to exit the menu in Gnome (if needed)
+xdotool key Escape
