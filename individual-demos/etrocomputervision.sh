@@ -37,15 +37,15 @@ npm install
 #run demo
 gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "nohup python3 main.py; echo 'Press exit to enter'; read"
 # Open Chromium in kiosk mode
-gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
+
 
 
 
 # Wait for the system to initialize (sleep for 20 seconds)
-sleep 20
+sleep 10
 
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run demo --slug=computer-image-analysis; echo 'Press Enter to exit'; read"
-
+gnome-terminal -- bash -c 'chromium-browser --window --kiosk "http://localhost:5173"'
 
 
 sleep 10  
