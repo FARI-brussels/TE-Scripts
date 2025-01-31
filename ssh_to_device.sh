@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CMS_URL="http://46.226.110.124:1337/api/devices"
-UPDATE_IPS_SCRIPT="update_ips.sh" # You should provide the correct path to your script
+CMS_URL="https://fari-cms.directus.app/items/devices"
+UPDATE_IPS_SCRIPT="update_ips_directus.sh" # You should provide the correct path to your script
 
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <device_name>"
@@ -13,7 +13,7 @@ device_name="$1"
 # Function to get IP from CMS
 get_ip_from_cms() {
     local name="$1"
-    curl -s "$CMS_URL" | jq -r --arg name "$name" '.data[] | select(.attributes.device_id == $name) | .attributes.ip'
+    curl -s "$CMS_URL" | jq -r --arg name "$name" '.data[] | select(.device_id == $name) | .ip'
 }
 
 # Get IP from CMS
