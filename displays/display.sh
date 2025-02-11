@@ -1,23 +1,40 @@
 #!/bin/bash
 
-# Function to get local IP address
-get_local_ip() {
-    # Try different methods to get IP address
-    local ip
+# Function to get MAC address
+get_mac_address() {
+    local mac
+    local interface
+
+    # Find the active network interface (excluding loopback)
     if command -v ip >/dev/null 2>&1; then
-        ip=$(ip route get 1 | awk '{print $(NF-2);exit}')
+        interface=$(ip route get 1 | awk '{print $5;exit}')
+    else
+        interface=$(route -n | grep '^0.0.0.0' | awk '{print $8}' | head -n1)
+    fi
+
+    # Get MAC address for the interface
+    if [ -z "$interface" ]; then
+        echo "Error: Could not determine network interface"
+        exit 1
+    fi
+
+    if command -v ip >/dev/null 2>&1; then
+        mac=$(ip link show "$interface" | awk '/ether/ {print $2}')
     elif command -v ifconfig >/dev/null 2>&1; then
-        ip=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | head -n 1)
+        mac=$(ifconfig "$interface" | awk '/ether/ {print $2}')
     else
         echo "Error: Neither 'ip' nor 'ifconfig' command found"
         exit 1
     fi
-    echo "$ip"
+
+    # Convert mac to uppercase and remove colons to match API format
+    mac=$(echo "$mac" | tr '[:lower:]' '[:upper:]' | tr -d ':')
+    echo "$mac"
 }
 
-# Function to find device ID from IP
+# Function to find device ID from MAC address
 find_device_id() {
-    local ip=$1
+    local mac=$1
     local response
     local device_id
     
@@ -28,18 +45,22 @@ find_device_id() {
     if [ $? -ne 0 ]; then
         echo "Error: Failed to fetch devices data"
         exit 1
-    }
+    fi
     
     # Parse JSON response to find matching device
-    # Using jq for JSON parsing if available, otherwise using grep
     if command -v jq >/dev/null 2>&1; then
-        device_id=$(echo "$response" | jq -r --arg ip "$ip" '.data[] | select(.ip == $ip) | .device_id')
+        # Using jq with error handling
+        if ! device_id=$(echo "$response" | jq -r --arg mac "$mac" '.data[] | select(.mac == $mac and .status=="published") | .device_id' 2>/dev/null); then
+            echo "Error: Failed to parse devices JSON"
+            exit 1
+        fi
     else
-        device_id=$(echo "$response" | grep -o '"device_id":"[^"]*"' | grep -o '[^"]*$' | head -n 1)
+        # Fallback to grep with basic parsing
+        device_id=$(echo "$response" | grep -B2 "\"mac\":\"$mac\"" | grep -o '"device_id":"[^"]*"' | cut -d'"' -f4 | head -n 1)
     fi
     
     if [ -z "$device_id" ]; then
-        echo "Error: No device found with IP $ip"
+        echo "Error: No device found with MAC address $mac"
         exit 1
     fi
     
@@ -59,19 +80,24 @@ get_content_id() {
     if [ $? -ne 0 ]; then
         echo "Error: Failed to fetch displays data"
         exit 1
-    }
+    fi
     
     # Parse JSON response to find content ID
     if command -v jq >/dev/null 2>&1; then
-        content_id=$(echo "$response" | jq -r --arg device_id "$device_id" '.data[] | select(.connected_device == ($device_id | tonumber)) | .content')
+        # Using jq with error handling
+        if ! content_id=$(echo "$response" | jq -r '.data[0].content' 2>/dev/null); then
+            echo "Error: Failed to parse displays JSON"
+            exit 1
+        fi
     else
-        content_id=$(echo "$response" | grep -o '"content":"[^"]*"' | grep -o '[^"]*$' | head -n 1)
+        # Fallback to grep with basic parsing
+        content_id=$(echo "$response" | grep -o '"content":"[^"]*"' | cut -d'"' -f4 | head -n 1)
     fi
     
     if [ -z "$content_id" ]; then
         echo "Error: No content found for device ID $device_id"
         exit 1
-    }
+    fi
     
     echo "$content_id"
 }
@@ -104,12 +130,12 @@ play_video() {
 
 # Main script execution
 main() {
-    # Get local IP
-    local_ip=$(get_local_ip)
-    echo "Local IP: $local_ip"
+    # Get MAC address
+    mac_address=$(get_mac_address)
+    echo "MAC Address: $mac_address"
     
     # Find device ID
-    device_id=$(find_device_id "$local_ip")
+    device_id=$(find_device_id "$mac_address")
     echo "Device ID: $device_id"
     
     # Get content ID
