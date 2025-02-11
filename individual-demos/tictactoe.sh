@@ -28,7 +28,6 @@ kill -9 $(lsof -t -i:5000)
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run dev; read -p 'Press enter to continue...'"
 
 
-
 gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run backend:dev; read -p 'Press enter to continue...'"
 
 

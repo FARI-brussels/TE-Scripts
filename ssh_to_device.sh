@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CMS_URL="https://fari-cms.directus.app/items/devices"
-UPDATE_IPS_SCRIPT="update_ips_directus.sh" # You should provide the correct path to your script
+UPDATE_IPS_SCRIPT="update_ips.sh" # You should provide the correct path to your script
 
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <device_name>"
