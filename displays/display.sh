@@ -27,8 +27,13 @@ get_mac_address() {
         exit 1
     fi
 
-    # Convert mac to uppercase and remove colons to match API format
-    mac=$(echo "$mac" | tr '[:lower:]' '[:upper:]' | tr -d ':')
+    # Format MAC address to match API format (lowercase with colons)
+    # First remove any existing colons and convert to lowercase
+    mac=$(echo "$mac" | tr -d ':' | tr '[:upper:]' '[:lower:]')
+    
+    # Insert colons every two characters
+    mac=$(echo "$mac" | sed 's/.\{2\}/&:/g' | sed 's/:$//')
+    
     echo "$mac"
 }
 
