@@ -110,7 +110,7 @@ get_content_id() {
 # Function to download and play video content
 play_video() {
     local content_id=$1
-    local videos_dir="/home/pi/videos"  # Directory to store videos
+    local videos_dir="/home/fari/videos"  # Directory to store videos
     local video_path="$videos_dir/$content_id.mp4"
     
     # Create videos directory if it doesn't exist
