@@ -119,45 +119,15 @@ play_video() {
     # If video doesn't exist, download it from Directus
     if [ ! -f "$video_path" ]; then
         echo "Downloading video content..."
-        # Get asset information from Directus
-        local asset_info
-        asset_info=$(curl -s "https://fari-cms.directus.app/assets/$content_id")
-        
-        # Check if asset info was retrieved successfully
-        if [ $? -ne 0 ]; then
-            echo "Error: Failed to get asset information from Directus"
+        if ! curl -o "$video_path" "https://fari-cms.directus.app/assets/$content_id"; then
+            echo "Error: Failed to download video content"
+            rm -f "$video_path"  # Clean up partial download
             exit 1
         fi
-        
-        # Extract filename and download URL using jq if available
-        if command -v jq >/dev/null 2>&1; then
-            local download_url
-            download_url=$(echo "$asset_info" | jq -r '.data.filename_download')
-            
-            if [ -z "$download_url" ] || [ "$download_url" = "null" ]; then
-                echo "Error: Could not extract download URL from asset information"
-                exit 1
-            fi
-            
-            # Download the file
-            if ! curl -L -o "$video_path" "https://fari-cms.directus.app/assets/$content_id?download"; then
-                echo "Error: Failed to download video content"
-                rm -f "$video_path"  # Clean up partial download
-                exit 1
-            fi
-        else
-            # Fallback to direct download without jq
-            if ! curl -L -o "$video_path" "https://fari-cms.directus.app/assets/$content_id?download"; then
-                echo "Error: Failed to download video content"
-                rm -f "$video_path"  # Clean up partial download
-                exit 1
-            fi
-        fi
-        
         echo "Download completed successfully"
     fi
     
-    # Verify the downloaded file is a video
+    # Check if file exists and is a video
     if [ -f "$video_path" ] && file --mime-type "$video_path" | grep -q "video"; then
         # Check for available video players and play in loop
         if command -v vlc >/dev/null 2>&1; then
