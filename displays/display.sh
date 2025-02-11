@@ -44,7 +44,7 @@ find_device_id() {
     fi
     
     echo "$device_id"
-
+}
 
 # Function to get content ID from device ID
 get_content_id() {
@@ -71,10 +71,10 @@ get_content_id() {
     if [ -z "$content_id" ]; then
         echo "Error: No content found for device ID $device_id"
         exit 1
-    
+    }
     
     echo "$content_id"
-
+}
 
 # Function to check if content is video and play it
 play_video() {
