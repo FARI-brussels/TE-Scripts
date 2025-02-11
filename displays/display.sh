@@ -110,7 +110,7 @@ get_content_id() {
 # Function to download and play video content
 play_video() {
     local content_id=$1
-    local videos_dir="/home/fari/videos"  # Directory to store videos
+    local videos_dir="/home/pi/videos"  # Directory to store videos
     local video_path="$videos_dir/$content_id.mp4"
     
     # Create videos directory if it doesn't exist
@@ -129,17 +129,12 @@ play_video() {
     
     # Check if file exists and is a video
     if [ -f "$video_path" ] && file --mime-type "$video_path" | grep -q "video"; then
-        # Check for available video players and play in loop
-        if command -v vlc >/dev/null 2>&1; then
-            vlc --loop "$video_path"
-        elif command -v mplayer >/dev/null 2>&1; then
-            mplayer -loop 0 "$video_path"
-        elif command -v ffplay >/dev/null 2>&1; then
-            while true; do
-                ffplay -autoexit "$video_path"
-            done
+        # Play video with mpv in loop mode
+        if command -v mpv >/dev/null 2>&1; then
+            mpv --loop=inf "$video_path"
         else
-            echo "Error: No suitable video player found"
+            echo "Error: mpv player is not installed"
+            echo "Please install mpv using: sudo apt-get install mpv"
             exit 1
         fi
     else
