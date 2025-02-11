@@ -163,3 +163,8 @@ main() {
 
 # Run main function
 main
+
+
+sleep 10
+#press escape for exiting menu in gnome (the menu mode is lauched on startup)
+xdotool key Escape
