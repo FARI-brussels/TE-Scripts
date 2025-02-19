@@ -23,7 +23,8 @@ def get_content_ids(device_id):
         response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()["data"]
-        display = next(display for display in data if display['connected_device']['id'] == int(device_id))
+        print(data)
+        display = next(display for display in data if display['connected_device']['device_id'] == device_id)
         # Extract all content IDs
         content_items = [c["directus_files_id"] for c in display["content"]]
 
