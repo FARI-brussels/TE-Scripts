@@ -76,7 +76,7 @@ main() {
     echo "Device ID: $device_id"
     
     # Call Python script with device ID
-    python3 video_handler.py "$device_id"
+    python3 content_handler.py "$device_id"
 }
 
 # Run main function
