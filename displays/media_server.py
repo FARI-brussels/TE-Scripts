@@ -97,7 +97,6 @@ def download_contents(content_ids):
     content_dir.mkdir(parents=True, exist_ok=True)
     
     content_paths = []
-    print(content_ids)
     for content_id in content_ids:
         content_path = content_dir / f"{content_id}"
         print(f"Downloading content {content_id}...")
@@ -146,19 +145,6 @@ def start_server(content_dir):
     
     return f"http://localhost:{port}"
 
-def open_browser(url):
-    """Open browser in fullscreen mode."""
-    try:
-        # Try using Firefox in kiosk mode
-        subprocess.run(['firefox', '--kiosk', url], check=True)
-    except subprocess.CalledProcessError:
-        try:
-            # Try using Chrome/Chromium in kiosk mode
-            subprocess.run(['google-chrome', '--kiosk', url], check=True)
-        except subprocess.CalledProcessError:
-            # Fallback to default browser
-            webbrowser.open(url)
-
 def main():
     if len(sys.argv) != 2:
         print("Usage: python3 media_server.py <device_id>")
@@ -182,7 +168,6 @@ def main():
     
     # Start server and open browser
     server_url = start_server(content_dir)
-    open_browser(server_url)
     
     # Keep script running
     try:

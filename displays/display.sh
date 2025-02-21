@@ -77,6 +77,9 @@ main() {
     
     # Call Python script with device ID
     python3 media_server.py "$device_id"
+    sleep 10
+    gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:8000'; read -p 'Press enter to continue...'"
+
 }
 
 # Run main function
