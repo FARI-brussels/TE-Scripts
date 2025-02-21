@@ -76,8 +76,9 @@ main() {
     echo "Device ID: $device_id"
     
     # Call Python script with device ID
-    python3 media_server.py "$device_id"
-    sleep 10
+    gnome-terminal -- bash -c "python3 media_server.py '$device_id'; read -p 'Press enter to continue...'"
+
+    sleep 5
     gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:8000'; read -p 'Press enter to continue...'"
 
 }
