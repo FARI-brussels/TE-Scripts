@@ -1,6 +1,22 @@
 # get_and_play_video.sh
 #!/bin/bash
 
+
+# Function to check connectivity
+function check_connection() {
+    # Ping the Google DNS server to check for internet connectivity
+    ping -c 1 8.8.8.8 > /dev/null 2>&1
+    return $?
+}
+
+# Wait for connection
+until check_connection
+do
+    echo "Waiting for WiFi connection..."
+    sleep 5  # Check every 5 seconds
+done
+
+
 # Function to get MAC address
 get_mac_address() {
     local mac
