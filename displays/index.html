@@ -9,34 +9,54 @@
         body, html {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background: black;
             overflow: hidden;
         }
         
         #mediaContainer {
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
         
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        video, img {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover; /* This will fill the screen, cropping if necessary */
         }
         
-        img {
-            max-width: 100%;
-            max-height: 100%;
+        /* Optional: Add this class and apply it to media that should maintain aspect ratio */
+        .preserve-ratio {
             object-fit: contain;
+            background: black;
         }
         
         .hidden {
             display: none;
+        }
+        
+        /* Ensure proper sizing on different displays */
+        @media screen and (orientation: landscape) {
+            video, img {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+        
+        /* Handle potential scrollbars */
+        * {
+            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari, Opera */
         }
     </style>
 </head>
@@ -73,6 +93,19 @@
                 video.autoplay = true;
                 video.controls = false;
                 video.loop = mediaFiles.length === 1; // Loop only if it's the only file
+                video.muted = true; // Ensure autoplay works
+                video.playsInline = true; // Better mobile support
+                
+                // Handle video loading
+                video.onloadedmetadata = () => {
+                    // Check if video is 16:9
+                    const videoRatio = video.videoWidth / video.videoHeight;
+                    const is16by9 = Math.abs(videoRatio - 16/9) < 0.1;
+                    
+                    if (!is16by9) {
+                        video.classList.add('preserve-ratio');
+                    }
+                };
                 
                 video.onended = () => {
                     if (!video.loop) {
@@ -81,9 +114,25 @@
                 };
                 
                 container.appendChild(video);
+                
+                // Force play (some browsers need this)
+                video.play().catch(e => console.log('Autoplay prevented:', e));
+                
             } else if (currentFile.type === 'image') {
                 const img = document.createElement('img');
                 img.src = currentFile.path;
+                
+                // Handle image loading
+                img.onload = () => {
+                    // Check if image is 16:9
+                    const imageRatio = img.naturalWidth / img.naturalHeight;
+                    const is16by9 = Math.abs(imageRatio - 16/9) < 0.1;
+                    
+                    if (!is16by9) {
+                        img.classList.add('preserve-ratio');
+                    }
+                };
+                
                 container.appendChild(img);
                 
                 // Move to next image after duration
