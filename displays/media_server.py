@@ -53,28 +53,21 @@ class MediaHandler(SimpleHTTPRequestHandler):
 def get_content_ids(device_id):
     """Get content IDs from device ID using Directus API."""
     try:
+        # Prepare the query parameters
         params = {
             'fields': '*.*'  # Fetch all fields including all media
         }
         
-        url = f"https://fari-cms.directus.app/items/displays?{urlencode(params)}"
-        response = requests.get(url)
+        # Make the API request with parameters
+        url = f"https://fari-cms.directus.app/items/displays"
+        response = requests.get(url, params=params)
         response.raise_for_status()
-        
-        data = response.json()
-        if not data.get('data'):
-            raise ValueError("No displays data found")
-        
-        content_items = []
-        for display in data['data']:
-            content = display.get('content')
-            if isinstance(content, list):
-                content_items.extend(content)
-            elif content:
-                content_items.append(content)
-        
-        if not content_items:
-            raise ValueError(f"No content found for device ID {device_id}")
+        data = response.json()["data"]
+        print(data)
+        display = next(display for display in data if display['connected_device']['device_id'] == device_id)
+        # Extract all content IDs
+        content_items = [c["directus_files_id"] for c in display["content"]]
+
         
         return content_items
     
@@ -104,6 +97,7 @@ def download_contents(content_ids):
     content_dir.mkdir(parents=True, exist_ok=True)
     
     content_paths = []
+    print(content_ids)
     for content_id in content_ids:
         content_path = content_dir / f"{content_id}"
         print(f"Downloading content {content_id}...")
