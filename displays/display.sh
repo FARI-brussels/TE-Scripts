@@ -94,7 +94,7 @@ main() {
     # Call Python script with device ID
     gnome-terminal -- bash -c "python3 /home/fari/Documents/TE-Scripts/displays/media_server.py '$device_id'; read -p 'Press enter to continue...'"
 
-    sleep 5
+    sleep 10
     gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:8000'; read -p 'Press enter to continue...'"
 
 }

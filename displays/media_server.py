@@ -3,15 +3,12 @@ import os
 import requests
 import shutil
 from pathlib import Path
-import mimetypes
 import time
 import json
 from urllib.parse import urlencode
 import magic
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-import webbrowser
 import threading
-import subprocess
 
 class MediaHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, media_dir=None, **kwargs):
