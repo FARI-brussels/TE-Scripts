@@ -1,4 +1,3 @@
-# index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,39 +23,50 @@
             position: relative;
         }
         
-        video, img {
+        .media-element {
             position: absolute;
             width: 100vw;
             height: 100vh;
-            object-fit: cover; /* This will fill the screen, cropping if necessary */
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 1;
         }
         
-        /* Optional: Add this class and apply it to media that should maintain aspect ratio */
+        .media-element.active {
+            opacity: 1;
+            z-index: 3;
+        }
+        
+        .media-element.next {
+            z-index: 2;
+            opacity: 1;
+        }
+        
+        .media-element.fade-out {
+            opacity: 0;
+            z-index: 2;
+        }
+        
         .preserve-ratio {
             object-fit: contain;
             background: black;
         }
         
-        .hidden {
-            display: none;
-        }
-        
-        /* Ensure proper sizing on different displays */
         @media screen and (orientation: landscape) {
-            video, img {
+            .media-element {
                 width: 100vw;
                 height: 100vh;
             }
         }
         
-        /* Handle potential scrollbars */
         * {
-            scrollbar-width: none;  /* Firefox */
-            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
         
         *::-webkit-scrollbar {
-            display: none;  /* Chrome, Safari, Opera */
+            display: none;
         }
     </style>
 </head>
@@ -65,14 +75,15 @@
     <script>
         let currentIndex = 0;
         let mediaFiles = [];
-        let slideshowDuration = 8000; // 8 seconds for images
+        let slideshowDuration = 8000;
+        let preloadedElements = new Map();
         
-        // Function to load media files list from server
         async function loadMediaList() {
             try {
                 const response = await fetch('/media-list');
                 mediaFiles = await response.json();
                 if (mediaFiles.length > 0) {
+                    await preloadNextMedia();
                     playMedia();
                 }
             } catch (error) {
@@ -80,76 +91,115 @@
             }
         }
         
-        // Function to play current media
-        function playMedia() {
-            const container = document.getElementById('mediaContainer');
-            container.innerHTML = ''; // Clear current content
+        async function preloadMedia(index) {
+            const file = mediaFiles[index];
             
-            const currentFile = mediaFiles[currentIndex];
-            
-            if (currentFile.type === 'video') {
-                const video = document.createElement('video');
-                video.src = currentFile.path;
-                video.autoplay = true;
-                video.controls = false;
-                video.loop = mediaFiles.length === 1; // Loop only if it's the only file
-                video.muted = true; // Ensure autoplay works
-                video.playsInline = true; // Better mobile support
+            // Create a new element each time to ensure fresh state
+            return new Promise((resolve) => {
+                const element = file.type === 'video' 
+                    ? document.createElement('video')
+                    : document.createElement('img');
                 
-                // Handle video loading
-                video.onloadedmetadata = () => {
-                    // Check if video is 16:9
-                    const videoRatio = video.videoWidth / video.videoHeight;
-                    const is16by9 = Math.abs(videoRatio - 16/9) < 0.1;
+                element.className = 'media-element';
+                element.src = file.path;
+                
+                if (file.type === 'video') {
+                    element.autoplay = true;
+                    element.controls = false;
+                    element.loop = mediaFiles.length === 1;
+                    element.muted = true;
+                    element.playsInline = true;
                     
-                    if (!is16by9) {
-                        video.classList.add('preserve-ratio');
-                    }
-                };
-                
-                video.onended = () => {
-                    if (!video.loop) {
+                    element.onloadedmetadata = () => {
+                        const ratio = element.videoWidth / element.videoHeight;
+                        if (Math.abs(ratio - 16/9) > 0.1) {
+                            element.classList.add('preserve-ratio');
+                        }
+                        resolve(element);
+                    };
+                } else {
+                    element.onload = () => {
+                        const ratio = element.naturalWidth / element.naturalHeight;
+                        if (Math.abs(ratio - 16/9) > 0.1) {
+                            element.classList.add('preserve-ratio');
+                        }
+                        resolve(element);
+                    };
+                }
+            });
+        }
+        
+        async function preloadNextMedia() {
+            const nextIndex = (currentIndex + 1) % mediaFiles.length;
+            await preloadMedia(nextIndex);
+        }
+        
+        async function playMedia() {
+            const container = document.getElementById('mediaContainer');
+            const currentElement = await preloadMedia(currentIndex);
+            const nextIndex = (currentIndex + 1) % mediaFiles.length;
+            const nextElement = await preloadMedia(nextIndex);
+            
+            // Remove old elements that aren't current or next
+            Array.from(container.children).forEach(child => {
+                if (!child.classList.contains('active') && !child.classList.contains('next')) {
+                    container.removeChild(child);
+                }
+            });
+            
+            // Add current element if not already in container
+            if (!container.contains(currentElement)) {
+                container.appendChild(currentElement);
+            }
+            
+            // Add next element if not already in container
+            if (!container.contains(nextElement)) {
+                container.appendChild(nextElement);
+                nextElement.classList.add('next');
+            }
+            
+            // If it's a video, ensure it's ready to play
+            if (mediaFiles[currentIndex].type === 'video') {
+                await currentElement.play().catch(e => console.log('Autoplay prevented:', e));
+            }
+            
+            // Make the transition
+            currentElement.classList.add('active');
+            
+            if (mediaFiles[currentIndex].type === 'video') {
+                currentElement.onended = () => {
+                    if (!currentElement.loop) {
                         nextMedia();
                     }
                 };
-                
-                container.appendChild(video);
-                
-                // Force play (some browsers need this)
-                video.play().catch(e => console.log('Autoplay prevented:', e));
-                
-            } else if (currentFile.type === 'image') {
-                const img = document.createElement('img');
-                img.src = currentFile.path;
-                
-                // Handle image loading
-                img.onload = () => {
-                    // Check if image is 16:9
-                    const imageRatio = img.naturalWidth / img.naturalHeight;
-                    const is16by9 = Math.abs(imageRatio - 16/9) < 0.1;
-                    
-                    if (!is16by9) {
-                        img.classList.add('preserve-ratio');
-                    }
-                };
-                
-                container.appendChild(img);
-                
-                // Move to next image after duration
+            } else {
                 setTimeout(nextMedia, slideshowDuration);
             }
         }
         
-        // Function to play next media
-        function nextMedia() {
-            currentIndex = (currentIndex + 1) % mediaFiles.length;
+        async function nextMedia() {
+            const container = document.getElementById('mediaContainer');
+            const oldElement = container.querySelector('.active');
+            const nextIndex = (currentIndex + 1) % mediaFiles.length;
+            
+            if (oldElement) {
+                // Start fade out of current element
+                oldElement.classList.add('fade-out');
+                oldElement.classList.remove('active');
+                
+                // Clean up old element after transition
+                setTimeout(() => {
+                    if (oldElement.parentNode) {
+                        oldElement.parentNode.removeChild(oldElement);
+                    }
+                }, 500); // Match the CSS transition duration
+            }
+            
+            // Update current index and play next media
+            currentIndex = nextIndex;
             playMedia();
         }
         
-        // Start loading media when page loads
-        window.onload = loadMediaList;
-        
-        // Handle fullscreen
         function requestFullscreen() {
             const elem = document.documentElement;
             if (elem.requestFullscreen) {
@@ -161,7 +211,7 @@
             }
         }
         
-        // Request fullscreen on first user interaction
+        window.onload = loadMediaList;
         document.addEventListener('click', requestFullscreen, { once: true });
     </script>
 </body>
