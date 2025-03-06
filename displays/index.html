@@ -40,7 +40,7 @@
         
         .media-element.next {
             z-index: 2;
-            opacity: 1;
+            opacity: 0; /* Start hidden */
         }
         
         .media-element.fade-out {
@@ -76,14 +76,14 @@
         let currentIndex = 0;
         let mediaFiles = [];
         let slideshowDuration = 8000;
-        let preloadedElements = new Map();
+        let transitionInProgress = false;
+        let preloadCache = new Map();
         
         async function loadMediaList() {
             try {
                 const response = await fetch('/media-list');
                 mediaFiles = await response.json();
                 if (mediaFiles.length > 0) {
-                    await preloadNextMedia();
                     playMedia();
                 }
             } catch (error) {
@@ -94,7 +94,11 @@
         async function preloadMedia(index) {
             const file = mediaFiles[index];
             
-            // Create a new element each time to ensure fresh state
+            // Check if we already have this in the cache
+            if (preloadCache.has(index)) {
+                return preloadCache.get(index);
+            }
+            
             return new Promise((resolve) => {
                 const element = file.type === 'video' 
                     ? document.createElement('video')
@@ -102,9 +106,10 @@
                 
                 element.className = 'media-element';
                 element.src = file.path;
+                element.dataset.index = index; // Store index for reference
                 
                 if (file.type === 'video') {
-                    element.autoplay = true;
+                    element.autoplay = false; // We'll play manually later
                     element.controls = false;
                     element.loop = mediaFiles.length === 1;
                     element.muted = true;
@@ -115,7 +120,14 @@
                         if (Math.abs(ratio - 16/9) > 0.1) {
                             element.classList.add('preserve-ratio');
                         }
+                        preloadCache.set(index, element);
                         resolve(element);
+                    };
+                    
+                    element.onerror = () => {
+                        console.error(`Error loading video: ${file.path}`);
+                        preloadCache.delete(index);
+                        resolve(null);
                     };
                 } else {
                     element.onload = () => {
@@ -123,49 +135,88 @@
                         if (Math.abs(ratio - 16/9) > 0.1) {
                             element.classList.add('preserve-ratio');
                         }
+                        preloadCache.set(index, element);
                         resolve(element);
+                    };
+                    
+                    element.onerror = () => {
+                        console.error(`Error loading image: ${file.path}`);
+                        preloadCache.delete(index);
+                        resolve(null);
                     };
                 }
             });
         }
         
-        async function preloadNextMedia() {
-            const nextIndex = (currentIndex + 1) % mediaFiles.length;
-            await preloadMedia(nextIndex);
-        }
-        
-        async function playMedia() {
+        function cleanMediaContainer() {
+            // Only keep active and next elements
             const container = document.getElementById('mediaContainer');
-            const currentElement = await preloadMedia(currentIndex);
-            const nextIndex = (currentIndex + 1) % mediaFiles.length;
-            const nextElement = await preloadMedia(nextIndex);
+            const activeElement = container.querySelector('.active');
+            const nextElement = container.querySelector('.next');
             
-            // Remove old elements that aren't current or next
             Array.from(container.children).forEach(child => {
-                if (!child.classList.contains('active') && !child.classList.contains('next')) {
+                if (child !== activeElement && child !== nextElement) {
                     container.removeChild(child);
                 }
             });
             
-            // Add current element if not already in container
+            // Limit cache size
+            if (preloadCache.size > 3) {
+                const keysToDelete = Array.from(preloadCache.keys())
+                    .filter(key => key !== currentIndex && key !== (currentIndex + 1) % mediaFiles.length)
+                    .slice(0, preloadCache.size - 3);
+                
+                keysToDelete.forEach(key => preloadCache.delete(key));
+            }
+        }
+        
+        async function playMedia() {
+            if (transitionInProgress || mediaFiles.length === 0) return;
+            transitionInProgress = true;
+            
+            const container = document.getElementById('mediaContainer');
+            
+            // Clean up excess elements
+            cleanMediaContainer();
+            
+            // Get current element
+            let currentElement = await preloadMedia(currentIndex);
+            if (!currentElement) {
+                // If current element failed to load, move to next
+                currentIndex = (currentIndex + 1) % mediaFiles.length;
+                transitionInProgress = false;
+                return playMedia();
+            }
+            
+            // Get next element for preloading
+            const nextIndex = (currentIndex + 1) % mediaFiles.length;
+            const nextElement = await preloadMedia(nextIndex);
+            
+            // Add current element to container if not already there
             if (!container.contains(currentElement)) {
                 container.appendChild(currentElement);
             }
             
-            // Add next element if not already in container
-            if (!container.contains(nextElement)) {
+            // Add next element for preloading if valid
+            if (nextElement && !container.contains(nextElement)) {
                 container.appendChild(nextElement);
                 nextElement.classList.add('next');
             }
             
-            // If it's a video, ensure it's ready to play
+            // Prepare video if needed
             if (mediaFiles[currentIndex].type === 'video') {
-                await currentElement.play().catch(e => console.log('Autoplay prevented:', e));
+                currentElement.currentTime = 0;
+                try {
+                    await currentElement.play();
+                } catch (e) {
+                    console.log('Autoplay prevented:', e);
+                }
             }
             
-            // Make the transition
+            // Make current element active
             currentElement.classList.add('active');
             
+            // Set timer for next media
             if (mediaFiles[currentIndex].type === 'video') {
                 currentElement.onended = () => {
                     if (!currentElement.loop) {
@@ -175,29 +226,38 @@
             } else {
                 setTimeout(nextMedia, slideshowDuration);
             }
+            
+            transitionInProgress = false;
         }
         
         async function nextMedia() {
+            if (transitionInProgress) return;
+            transitionInProgress = true;
+            
             const container = document.getElementById('mediaContainer');
             const oldElement = container.querySelector('.active');
             const nextIndex = (currentIndex + 1) % mediaFiles.length;
             
             if (oldElement) {
-                // Start fade out of current element
-                oldElement.classList.add('fade-out');
+                // Start fade out transition
                 oldElement.classList.remove('active');
+                oldElement.classList.add('fade-out');
                 
-                // Clean up old element after transition
+                // Remove after transition completes
                 setTimeout(() => {
-                    if (oldElement.parentNode) {
-                        oldElement.parentNode.removeChild(oldElement);
+                    if (oldElement.parentNode === container) {
+                        container.removeChild(oldElement);
                     }
-                }, 500); // Match the CSS transition duration
+                    cleanMediaContainer();
+                }, 600); // Slightly longer than CSS transition
             }
             
-            // Update current index and play next media
+            // Update current index
             currentIndex = nextIndex;
-            playMedia();
+            transitionInProgress = false;
+            
+            // Start playing next media
+            setTimeout(playMedia, 100); // Small delay to ensure transitions don't conflict
         }
         
         function requestFullscreen() {
