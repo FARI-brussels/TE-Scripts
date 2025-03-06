@@ -8,56 +8,38 @@
         body, html {
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background: black;
             overflow: hidden;
         }
         
         #mediaContainer {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             position: relative;
+            width: 100%;
+            height: 100%;
+            background: black;
         }
         
         .media-element {
             position: absolute;
-            width: 100vw;
-            height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 1s ease-in-out;
             z-index: 1;
         }
         
         .media-element.active {
             opacity: 1;
-            z-index: 3;
-        }
-        
-        .media-element.next {
-            z-index: 2;
-            opacity: 0; /* Start hidden */
-        }
-        
-        .media-element.fade-out {
-            opacity: 0;
             z-index: 2;
         }
         
         .preserve-ratio {
             object-fit: contain;
-            background: black;
-        }
-        
-        @media screen and (orientation: landscape) {
-            .media-element {
-                width: 100vw;
-                height: 100vh;
-            }
         }
         
         * {
@@ -73,193 +55,160 @@
 <body>
     <div id="mediaContainer"></div>
     <script>
-        let currentIndex = 0;
-        let mediaFiles = [];
-        let slideshowDuration = 8000;
-        let transitionInProgress = false;
-        let preloadCache = new Map();
+        // Configuration
+        const slideshowDuration = 8000; // milliseconds
         
+        // Global variables
+        let mediaFiles = [];
+        let currentIndex = 0;
+        let slideTimer = null;
+        let activeElement = null;
+        
+        // Load media list from server
         async function loadMediaList() {
             try {
                 const response = await fetch('/media-list');
                 mediaFiles = await response.json();
+                console.log(`Loaded ${mediaFiles.length} media files`);
+                
                 if (mediaFiles.length > 0) {
-                    playMedia();
+                    startSlideshow();
+                } else {
+                    console.error('No media files found');
                 }
             } catch (error) {
                 console.error('Error loading media list:', error);
             }
         }
         
-        async function preloadMedia(index) {
+        // Start the slideshow
+        function startSlideshow() {
+            // Show the first media item
+            showMedia(currentIndex);
+        }
+        
+        // Display a media item
+        async function showMedia(index) {
+            const container = document.getElementById('mediaContainer');
             const file = mediaFiles[index];
             
-            // Check if we already have this in the cache
-            if (preloadCache.has(index)) {
-                return preloadCache.get(index);
-            }
+            // Create the appropriate element for the media type
+            const element = file.type === 'video' 
+                ? document.createElement('video')
+                : document.createElement('img');
             
-            return new Promise((resolve) => {
-                const element = file.type === 'video' 
-                    ? document.createElement('video')
-                    : document.createElement('img');
+            // Configure the element
+            element.className = 'media-element';
+            element.src = file.path;
+            
+            // Configure video-specific properties
+            if (file.type === 'video') {
+                element.autoplay = true;
+                element.controls = false;
+                element.loop = mediaFiles.length === 1;
+                element.muted = true;
+                element.playsInline = true;
                 
-                element.className = 'media-element';
-                element.src = file.path;
-                element.dataset.index = index; // Store index for reference
-                
-                if (file.type === 'video') {
-                    element.autoplay = false; // We'll play manually later
-                    element.controls = false;
-                    element.loop = mediaFiles.length === 1;
-                    element.muted = true;
-                    element.playsInline = true;
-                    
-                    element.onloadedmetadata = () => {
-                        const ratio = element.videoWidth / element.videoHeight;
-                        if (Math.abs(ratio - 16/9) > 0.1) {
-                            element.classList.add('preserve-ratio');
-                        }
-                        preloadCache.set(index, element);
-                        resolve(element);
-                    };
-                    
-                    element.onerror = () => {
-                        console.error(`Error loading video: ${file.path}`);
-                        preloadCache.delete(index);
-                        resolve(null);
-                    };
-                } else {
-                    element.onload = () => {
-                        const ratio = element.naturalWidth / element.naturalHeight;
-                        if (Math.abs(ratio - 16/9) > 0.1) {
-                            element.classList.add('preserve-ratio');
-                        }
-                        preloadCache.set(index, element);
-                        resolve(element);
-                    };
-                    
-                    element.onerror = () => {
-                        console.error(`Error loading image: ${file.path}`);
-                        preloadCache.delete(index);
-                        resolve(null);
-                    };
-                }
-            });
-        }
-        
-        function cleanMediaContainer() {
-            // Only keep active and next elements
-            const container = document.getElementById('mediaContainer');
-            const activeElement = container.querySelector('.active');
-            const nextElement = container.querySelector('.next');
-            
-            Array.from(container.children).forEach(child => {
-                if (child !== activeElement && child !== nextElement) {
-                    container.removeChild(child);
-                }
-            });
-            
-            // Limit cache size
-            if (preloadCache.size > 3) {
-                const keysToDelete = Array.from(preloadCache.keys())
-                    .filter(key => key !== currentIndex && key !== (currentIndex + 1) % mediaFiles.length)
-                    .slice(0, preloadCache.size - 3);
-                
-                keysToDelete.forEach(key => preloadCache.delete(key));
-            }
-        }
-        
-        async function playMedia() {
-            if (transitionInProgress || mediaFiles.length === 0) return;
-            transitionInProgress = true;
-            
-            const container = document.getElementById('mediaContainer');
-            
-            // Clean up excess elements
-            cleanMediaContainer();
-            
-            // Get current element
-            let currentElement = await preloadMedia(currentIndex);
-            if (!currentElement) {
-                // If current element failed to load, move to next
-                currentIndex = (currentIndex + 1) % mediaFiles.length;
-                transitionInProgress = false;
-                return playMedia();
-            }
-            
-            // Get next element for preloading
-            const nextIndex = (currentIndex + 1) % mediaFiles.length;
-            const nextElement = await preloadMedia(nextIndex);
-            
-            // Add current element to container if not already there
-            if (!container.contains(currentElement)) {
-                container.appendChild(currentElement);
-            }
-            
-            // Add next element for preloading if valid
-            if (nextElement && !container.contains(nextElement)) {
-                container.appendChild(nextElement);
-                nextElement.classList.add('next');
-            }
-            
-            // Prepare video if needed
-            if (mediaFiles[currentIndex].type === 'video') {
-                currentElement.currentTime = 0;
-                try {
-                    await currentElement.play();
-                } catch (e) {
-                    console.log('Autoplay prevented:', e);
-                }
-            }
-            
-            // Make current element active
-            currentElement.classList.add('active');
-            
-            // Set timer for next media
-            if (mediaFiles[currentIndex].type === 'video') {
-                currentElement.onended = () => {
-                    if (!currentElement.loop) {
-                        nextMedia();
+                element.onloadedmetadata = () => {
+                    const ratio = element.videoWidth / element.videoHeight;
+                    if (Math.abs(ratio - 16/9) > 0.1) {
+                        element.classList.add('preserve-ratio');
                     }
+                    
+                    // Append to container now that it's configured
+                    container.appendChild(element);
+                    
+                    // Wait a moment before making active to ensure proper rendering
+                    setTimeout(() => {
+                        // Remove active class from previous element
+                        if (activeElement) {
+                            activeElement.classList.remove('active');
+                        }
+                        
+                        // Make this element active
+                        element.classList.add('active');
+                        activeElement = element;
+                        
+                        // Set up the next transition
+                        element.onended = () => {
+                            if (!element.loop) {
+                                goToNextMedia();
+                            }
+                        };
+                    }, 50);
+                };
+                
+                element.onerror = () => {
+                    console.error(`Error loading video: ${file.path}`);
+                    goToNextMedia();
                 };
             } else {
-                setTimeout(nextMedia, slideshowDuration);
-            }
-            
-            transitionInProgress = false;
-        }
-        
-        async function nextMedia() {
-            if (transitionInProgress) return;
-            transitionInProgress = true;
-            
-            const container = document.getElementById('mediaContainer');
-            const oldElement = container.querySelector('.active');
-            const nextIndex = (currentIndex + 1) % mediaFiles.length;
-            
-            if (oldElement) {
-                // Start fade out transition
-                oldElement.classList.remove('active');
-                oldElement.classList.add('fade-out');
-                
-                // Remove after transition completes
-                setTimeout(() => {
-                    if (oldElement.parentNode === container) {
-                        container.removeChild(oldElement);
+                // Image element
+                element.onload = () => {
+                    const ratio = element.naturalWidth / element.naturalHeight;
+                    if (Math.abs(ratio - 16/9) > 0.1) {
+                        element.classList.add('preserve-ratio');
                     }
-                    cleanMediaContainer();
-                }, 600); // Slightly longer than CSS transition
+                    
+                    // Append to container now that it's loaded
+                    container.appendChild(element);
+                    
+                    // Wait a moment before making active to ensure proper rendering
+                    setTimeout(() => {
+                        // Remove active class from previous element
+                        if (activeElement) {
+                            activeElement.classList.remove('active');
+                        }
+                        
+                        // Make this element active
+                        element.classList.add('active');
+                        activeElement = element;
+                        
+                        // Schedule next transition
+                        clearTimeout(slideTimer);
+                        slideTimer = setTimeout(goToNextMedia, slideshowDuration);
+                    }, 50);
+                };
+                
+                element.onerror = () => {
+                    console.error(`Error loading image: ${file.path}`);
+                    goToNextMedia();
+                };
             }
-            
-            // Update current index
-            currentIndex = nextIndex;
-            transitionInProgress = false;
-            
-            // Start playing next media
-            setTimeout(playMedia, 100); // Small delay to ensure transitions don't conflict
         }
         
+        // Go to the next media item
+        function goToNextMedia() {
+            // Clean up old elements (except the active one)
+            cleanupElements();
+            
+            // Increment to the next index
+            currentIndex = (currentIndex + 1) % mediaFiles.length;
+            
+            // Show the next media
+            showMedia(currentIndex);
+        }
+        
+        // Clean up old elements
+        function cleanupElements() {
+            const container = document.getElementById('mediaContainer');
+            const elements = container.querySelectorAll('.media-element:not(.active)');
+            
+            elements.forEach(element => {
+                container.removeChild(element);
+            });
+            
+            // If there are too many active elements (should only be one), clean them up too
+            const activeElements = container.querySelectorAll('.active');
+            if (activeElements.length > 1) {
+                // Keep only the most recently added one
+                for (let i = 0; i < activeElements.length - 1; i++) {
+                    container.removeChild(activeElements[i]);
+                }
+            }
+        }
+        
+        // Request fullscreen when clicked
         function requestFullscreen() {
             const elem = document.documentElement;
             if (elem.requestFullscreen) {
@@ -271,6 +220,7 @@
             }
         }
         
+        // Initialize when the page loads
         window.onload = loadMediaList;
         document.addEventListener('click', requestFullscreen, { once: true });
     </script>

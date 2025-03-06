@@ -81,7 +81,7 @@ def get_content_ids(device_id):
 
 def download_contents(content_ids):
     """Download all content from Directus to a fresh display_content folder."""
-    base_dir = Path("/home/fari")
+    base_dir = Path.home()
     content_dir = base_dir / "display_content"
     
     # Remove existing display_content folder if it exists
