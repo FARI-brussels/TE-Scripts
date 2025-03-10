@@ -97,7 +97,7 @@ main() {
     echo "Device ID: $device_id"
     
     # Call Python script with device ID and wait for it to launch the server
-    gnome-terminal -- bash -c "python3 /home/fari/Documents/TE-Scripts/displays/media_server.py '$device_id' $PORT &"
+    gnome-terminal -- bash -c "python3 /home/fari/Documents/TE-Scripts/displays/media_server.py '$device_id' $PORT; read -p 'Press enter to continue...'"
     
     # Wait for the server to start
     until lsof -i :$PORT >/dev/null 2>&1; do
