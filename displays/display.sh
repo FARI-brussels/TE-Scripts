@@ -2,7 +2,7 @@
 #!/bin/bash
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 SCRIPT_REPO="https://github.com/FARI-brussels/TE-Scripts.git"
-PORT = 8000
+PORT=8000
 
 # Clone or pull the latest version of the repository
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$SCRIPT_DIR" "$DEMO_REPO"
@@ -100,7 +100,7 @@ main() {
     gnome-terminal -- bash -c "python3 /home/fari/Documents/TE-Scripts/displays/media_server.py '$device_id' $PORT &"
     
     # Wait for the server to start
-    until nc -z localhost $PORT; do
+    until lsof -i :$PORT >/dev/null 2>&1; do
         echo "Waiting for the server to start..."
         sleep 2
     done
