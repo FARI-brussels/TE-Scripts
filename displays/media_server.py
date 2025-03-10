@@ -119,7 +119,7 @@ def download_contents(content_ids):
     
     return content_dir, content_paths
 
-def start_server(content_dir):
+def start_server(content_dir, port):
     """Start HTTP server to serve media files."""
     # Copy index.html to content directory
     script_dir = Path(__file__).parent
@@ -130,7 +130,6 @@ def start_server(content_dir):
     os.chdir(content_dir)
     
     # Start server
-    port = 8000
     handler = lambda *args: MediaHandler(*args, media_dir=content_dir)
     server = HTTPServer(('localhost', port), handler)
     print(f"Server started at http://localhost:{port}")
@@ -143,12 +142,14 @@ def start_server(content_dir):
     return f"http://localhost:{port}"
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python3 media_server.py <device_id>")
+    if len(sys.argv) != 3:
+        print("Usage: python3 media_server.py <device_id> <port>")
         sys.exit(1)
     
     device_id = sys.argv[1]
+    port = int(sys.argv[2])
     print(f"Device ID: {device_id}")
+    print(f"Port: {port}")
     
     # Get all content IDs
     content_ids = get_content_ids(device_id)
@@ -164,7 +165,7 @@ def main():
     print(f"Successfully downloaded {len(content_paths)} out of {len(content_ids)} items")
     
     # Start server and open browser
-    server_url = start_server(content_dir)
+    server_url = start_server(content_dir, port)
     
     # Keep script running
     try:

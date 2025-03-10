@@ -1,6 +1,11 @@
 # get_and_play_video.sh
 #!/bin/bash
+SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
+SCRIPT_REPO="https://github.com/FARI-brussels/TE-Scripts.git"
+PORT = 8000
 
+# Clone or pull the latest version of the repository
+"$SCRIPT_DIR/clone_or_pull_repo.sh" "$SCRIPT_DIR" "$DEMO_REPO"
 
 # Function to check connectivity
 function check_connection() {
@@ -91,11 +96,16 @@ main() {
     device_id=$(find_device_id "$mac_address")
     echo "Device ID: $device_id"
     
-    # Call Python script with device ID
-    gnome-terminal -- bash -c "python3 /home/fari/Documents/TE-Scripts/displays/media_server.py '$device_id'; read -p 'Press enter to continue...'"
+    # Call Python script with device ID and wait for it to launch the server
+    gnome-terminal -- bash -c "python3 /home/fari/Documents/TE-Scripts/displays/media_server.py '$device_id' $PORT &"
+    
+    # Wait for the server to start
+    until nc -z localhost $PORT; do
+        echo "Waiting for the server to start..."
+        sleep 2
+    done
 
-    sleep 10
-    gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:8000'; read -p 'Press enter to continue...'"
+    gnome-terminal -- bash -c "firefox --kiosk --new-window 'http://localhost:$PORT'; read -p 'Press enter to continue...'"
 
 }
 
