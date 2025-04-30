@@ -3,13 +3,9 @@
 FRONTEND_REPO="https://github.com/FARI-brussels/Welcome-Screen-v2.git"
 FRONTEND_DIR="/home/fari/Documents/Welcome-Screen-v2"
 
-BACKEND_REPO="https://github.com/FARI-brussels/demo-iridia-animal-welfare"
-BACKEND_DIR="/home/fari/Documents/demo-iridia-animal-welfare"
-
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
 # Clone or pull the latest version of the repository
-"$SCRIPT_DIR/clone_or_pull_repo.sh" "$BACKEND_DIR" "$BACKEND_REPO"
 "$SCRIPT_DIR/clone_or_pull_repo.sh" "$FRONTEND_DIR" "$FRONTEND_REPO"
 
 # Set the correct Node.js version using nvm
@@ -19,7 +15,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # Use a specific Node.js version
 nvm use node
-
 
 # Remove chromium cache
 rm -rf ~/.cache/chromium
@@ -36,12 +31,6 @@ gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run demo --slug
 
 # Open Chromium in kiosk mode
 gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
-
-#run demo
-gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "flask run; echo 'Press exit to enter'; read"
-
-# Wait for the system to initialize (sleep for 20 seconds)
-sleep 5
 
 # Press Escape to exit the menu in Gnome (if needed)
 xdotool key Escape
