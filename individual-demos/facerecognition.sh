@@ -21,7 +21,7 @@ npm install
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev; echo 'Press Enter to exit'; read"
 
 # Open Chromium in kiosk mode
-gnome-terminal -- bash -c 'chromium-browser --kiosk "http://localhost:5173"'
+gnome-terminal -- bash -c 'firefox --kiosk "http://localhost:5173"'
 
 # Wait for the system to initialize (sleep for 20 seconds)
 sleep 5
