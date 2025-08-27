@@ -1,6 +1,6 @@
 #!/bin/bash
 # Demo repo and demo directory path on the sbc here
-DEMO_REPO="https://github.com/FARI-brussels/demo-air-quality.git"
+DEMO_REPO="git@github.com:FARI-brussels/demo-fari-air-quality.git"
 DEMO_DIR="/home/fari/Documents/demo-air-quality"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 

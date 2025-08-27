@@ -1,6 +1,6 @@
 #!/bin/bash
 # Demo repo and demo directory path on the sbc here
-DEMO_REPO="https://github.com/FARI-brussels/fari-demo-face-recognition.git"
+DEMO_REPO="https://github.com/FARI-brussels/demo-fari-face-recognition.git"
 DEMO_DIR="/home/fari/Documents/fari-demo-face-recognition"
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 
