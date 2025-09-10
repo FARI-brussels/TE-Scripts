@@ -21,11 +21,11 @@ npm install
 #run backend
 #gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python main.py --modes REAL;"
 
-gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "python app.py; read -p 'Press enter to continue...'"
+gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "python app.py; read -p 'Press enter to continue...'"
 
 
 #run frontend
-gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "npm run dev; read -p 'Press enter to continue...'"
+gnome-terminal --working-directory=$FRONTEND_DIR -- bash -c "npm run dev; read -p 'Press enter to continue...'"
 
 gnome-terminal -- bash -c "firefox --kiosk 'http://localhost:5173'; read -p 'Press enter to continue...'"
 
