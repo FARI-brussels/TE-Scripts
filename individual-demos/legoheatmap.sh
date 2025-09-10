@@ -1,7 +1,7 @@
 #!/bin/bash
 # Demo repo and demo directory path on the sbc here
 REPO="https://github.com/FARI-brussels/demo-etro-heat-island.git"
-DIR="/home/fari/Documents/demo-heatmap-poc/backend"
+DIR="/home/fari/Documents/demo-etro-heat-island"
 
 SCRIPT_DIR="/home/fari/Documents/TE-Scripts"
 # Use git_sync.sh to sync both repositories
