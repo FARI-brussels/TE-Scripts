@@ -13,6 +13,14 @@ rm -rf ~/.cache/chromium
 # Kill any process using port 5173 (if running)
 kill -9 $(lsof -t -i:5173)
 
+# Set the correct Node.js version using nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Use a specific Node.js version
+nvm use node
+
 # Navigate to the demo directory and run npm install
 cd "$DEMO_DIR"
 npm install
