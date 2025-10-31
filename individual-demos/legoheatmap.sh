@@ -21,7 +21,8 @@ npm install
 #run backend
 #gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "source /home/fari/miniconda3/etc/profile.d/conda.sh && conda activate tictactoe && python main.py --modes REAL;"
 
-gnome-terminal --working-directory=$BACKEND_DIR -- bash -c "python app.py; read -p 'Press enter to continue...'"
+gnome-terminal --working-directory="$BACKEND_DIR" -- bash -c ".venv/bin/python app.py; read -p 'Press enter to continue...'"
+
 
 
 #run frontend
