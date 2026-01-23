@@ -28,7 +28,7 @@ kill -9 $(lsof -t -i:5000)
 gnome-terminal --working-directory=$DEMO_DIR -- bash -c "npm run dev -- --port=5000; echo 'Press Enter to exit'; read"
 
 
-gnome-terminal -- bash -c "firefox --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
+gnome-terminal -- bash -c "google-chrome --kiosk http://localhost:5000; echo 'Press Enter to exit'; read"
 
 sleep 2
 # #press escape for exiting menu in gnome (the menu mode is lauched on startup)
